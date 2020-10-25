@@ -21,11 +21,9 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create();
-        $nbUser = 20;
-        $users = [];
 
         //USERS
-        for($i=0;$i<$nbUser;$i++){
+        for($i=0;$i<25;$i++){
             $user  = new User();
             $user->setEmail($faker->email);
             $user->setPassword($this->encoder->encodePassword($user,'password'));
@@ -44,34 +42,30 @@ class AppFixtures extends Fixture
                     $user->setRoles(['ROLE_ADMIN']);
                     break;
             }
-
-            $users[] = $user;
             $manager->persist($user);
-        }
-        // TASK WITHOUT USER
-        for($i=0;$i<25;$i++)
-        {
-            $task  = new Task();
-            $task->setTitle($faker->sentence());
-            $task->setContent($faker->text(250));
-            $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
-            $task->isDone();
-            $task->toggle(boolval(rand(0,1)));
-            $manager->persist($task);
-        }
 
-        //TASK WITH USER
-        for($i=0;$i<150;$i++)
-        {
-            $task  = new Task();
-            $task->setUser($users[rand(0,$nbUser-1)]);
-            $task->setTitle($faker->sentence());
-            $task->setContent($faker->text(250));
-            $task->setCreatedAt($faker->dateTimeBetween('-100 days'));
-            $task->isDone();
-            $task->toggle(boolval(rand(0,1)));
+            for($j=0;$j<25;$j++)// TASK WITHOUT USER
+            {
+                $task  = new Task();
+                $task->setTitle($faker->sentence());
+                $task->setContent($faker->text(250));
+                $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
+                $task->isDone();
+                $task->toggle(boolval(rand(0,1)));
+                $manager->persist($task);
+            }
 
-            $manager->persist($task);
+            for($j=0;$j<150;$j++)//TASK WITH USER
+            {
+                $task  = new Task();
+                $task->setTitle($faker->sentence());
+                $task->setContent($faker->text(250));
+                $task->setCreatedAt($faker->dateTimeBetween('-100 days'));
+                $task->setUser($user);
+                $task->isDone();
+                $task->toggle(boolval(rand(0,1)));
+                $manager->persist($task);
+            }
         }
         $manager->flush();
     }
