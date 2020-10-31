@@ -4,14 +4,25 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->encoder = $passwordEncoder;
+    }
+
     /**
      * @Route("/users", name="user_list")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function listAction()
     {
@@ -21,8 +32,10 @@ class UserController extends AbstractController
     /**
      * @Route("/users/create", name="user_create")
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request, EntityManagerInterface $manager)
     {
+        $data = $request->request->get("user");
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
@@ -30,12 +43,15 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
-            $em = $this->getDoctrine()->getManager();
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+            if (isset($data['admin']))
+            {
+               $user->setRoles(['ROLE_ADMIN']);
+            }
 
-            $em->persist($user);
-            $em->flush();
+            $user->setPassword($this->encoder->encodePassword($user, 'password'));
+
+            $manager->persist($user);
+            $manager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
@@ -47,8 +63,9 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/edit", name="user_edit")
+     * @IsGranted("ROLE_ADMIN")
      */
-    public function editAction(User $user, Request $request)
+    public function editAction(User $user, Request $request, EntityManagerInterface $manager)
     {
         $form = $this->createForm(UserType::class, $user);
 
@@ -59,7 +76,7 @@ class UserController extends AbstractController
             $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
-            $this->getDoctrine()->getManager()->flush();
+            $manager()->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 

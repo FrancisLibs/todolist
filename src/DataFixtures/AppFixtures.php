@@ -23,7 +23,7 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
 
         //USERS
-        for($i=0;$i<25;$i++){
+        for($i=0;$i<15;$i++){
             $user  = new User();
             $user->setEmail($faker->email);
             $user->setPassword($this->encoder->encodePassword($user,'password'));
@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
             }
             $manager->persist($user);
 
-            for($j=0;$j<25;$j++)// TASK WITHOUT USER
+            for($j=0;$j<30;$j++)// TASK WITHOUT USER
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());
@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
                 $manager->persist($task);
             }
 
-            for($j=0;$j<150;$j++)//TASK WITH USER
+            for($j=0;$j<30;$j++)//TASK WITH USER
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());
