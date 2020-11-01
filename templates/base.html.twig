@@ -15,6 +15,7 @@
 
         <!-- Custom CSS -->
         <link href="{{ asset('css/shop-homepage.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,38 +26,10 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    
-                    <a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
-                    <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
-                </div>
-                <div class="navbar-header">
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('user_list') }}" class="btn btn-success ml-2">Administration</a>
-                    {% endif %}
-                    
-                    <a href="{{ path('user_create') }}" class="btn btn-primary ml-2">Inscription</a>
-
-                    {% if app.user %}
-                        <a href="{{ path('app_logout') }}" class="pull-right btn btn-danger ml-2">Déconnexion</a>
-                    {% endif %}
-                    
-                    {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                        <a href="{{ path('app_login') }}" class="btn btn-success ml-2">Connexion</a>
-                    {% endif %}
-                    </div>
-                </div>
-            </div>
-        </nav>
+        {% include "navbar.html.twig" %}
 
         <!-- Page Content -->
         <div class="container">
-            <div class="row">
-               
-            </div>
-
             <div class="row">
                 <div class="col-md-12">
                     {% for flash_message in app.session.flashBag.get('success') %}
@@ -72,7 +45,11 @@
                     {% endfor %}
 
                     {% block header_title %}{% endblock %}
-                    {% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">{% endblock %}
+
+                    {% block header_img %}
+                        <img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
+                    {% endblock %}
+                    
                 </div>
             </div>
 
