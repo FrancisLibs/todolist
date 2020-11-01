@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
             }
             $manager->persist($user);
 
-            for($j=0;$j<30;$j++)// TASK WITHOUT USER
+            for($j=0;$j<15;$j++)// TASK WITHOUT USER
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());
@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
                 $manager->persist($task);
             }
 
-            for($j=0;$j<30;$j++)//TASK WITH USER
+            for($j=0;$j<15;$j++)//TASK WITH USER
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());

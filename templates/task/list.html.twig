@@ -14,6 +14,7 @@
                     </h4>
                     <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
                     <p>{{ task.id }}</p>
+                    <p>{{ task.user.username }}</p>
                     <p>{{ task.content }}</p>
                 </div>
                 <div>

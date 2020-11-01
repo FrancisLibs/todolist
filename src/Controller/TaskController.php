@@ -5,27 +5,35 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
+     * @IsGranted("ROLE_USER")
      */
-    public function listAction(TaskRepository $repository)
+    public function listAction(TaskRepository $taskRepository, UserRepository $userRepository)
     {
         $user = $this->getUser();
 
-        if(empty($user))
+        if($user->getUsername() == "anonyme")
         {
-            $tasks = $repository->findWithoutUser();
+            $tasks = $taskRepository->findWithoutUser();
+            foreach($tasks as $task)
+            {
+                $task->setUser($user);
+            }
         }
         else
         {
-            $tasks = $repository->findBy(
+            $tasks = $taskRepository->findBy(
                 ['user' => $user]
             );
         }
@@ -63,6 +71,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
+     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function editAction(Task $task, Request $request, EntityManagerInterface $manager)
     {
@@ -87,6 +96,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function toggleTaskAction(Task $task, EntityManagerInterface $manager)
     {
@@ -100,6 +110,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
+     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function deleteTaskAction(Task $task, EntityManagerInterface $manager)
     {
