@@ -22,18 +22,14 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Tasks[]
      */
-    public function findWithoutUser(): array
+    public function findAdminTasks($user): array
     {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT t
-            FROM App\Entity\Task t
-            WHERE t.user IS NULL'
-        );
-
-        // returns an array of Product objects
-        return $query->getResult();
+        return $this->createQueryBuilder('t')
+            ->where('t.user = :val')
+            ->setParameter('val', $user)
+            ->orWhere('t.user is NULL')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

@@ -8,6 +8,7 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,29 +18,30 @@ class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
-     * @IsGranted("ROLE_USER")
      */
-    public function listAction(TaskRepository $taskRepository, UserRepository $userRepository)
+    public function listAction(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
+        $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
 
-        if($user->getUsername() == "anonyme")
+        if(!$hasAccess)
         {
-            $tasks = $taskRepository->findWithoutUser();
-            foreach($tasks as $task)
-            {
-                $task->setUser($user);
-            }
+            $tasks = $taskRepository->findBy(['user' => $user]);
         }
         else
         {
-            $tasks = $taskRepository->findBy(
-                ['user' => $user]
-            );
+            $tasks = $taskRepository->findAdminTasks($user);
+
+            foreach ($tasks as $task) {
+                if ($task->getUser() == NULL) {
+                    $task->setUser($anonymous);
+                }
+            }
         }
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
             ]
         );
     }
