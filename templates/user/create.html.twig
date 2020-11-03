@@ -7,11 +7,9 @@
 {% block body %}
     <div class="row">
         {{ form_start(form, {'action' : path('user_create')}) }}
-
             {{ form_row(form.username) }}
             {{ form_row(form.email) }}
             {{ form_row(form.password) }}
-
             {% if is_granted('ROLE_ADMIN') %}
                 {{ form_row(form.admin) }}
             {% endif %}
