@@ -6,12 +6,17 @@
 
 {% block body %}
     <div class="row">
-        {{ form_start(form, {'action' : path('user_create')}) }}
+        {{ form_start(form, {'action' : path('admin_user_create')}) }}
             {{ form_row(form.username) }}
             {{ form_row(form.email) }}
             {{ form_row(form.password) }}
             {% if is_granted('ROLE_ADMIN') %}
-                {{ form_row(form.admin) }}
+                {{ form_row(form.roles) }}
+            {% endif %}
+           
+            {# if csrf token is enabled for form render field #}
+            {% if form._token is defined %}
+                {{ form_widget(form._token) }}
             {% endif %}
 
             <button type="submit" class="btn btn-success pull-right">Ajouter</button>
