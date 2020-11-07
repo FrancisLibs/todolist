@@ -7,7 +7,7 @@
 
 {% block body %}
     <div class="row">
-        {{ form_start(form, {'action' : path('user_edit', {'id' : user.id})}) }}
+        {{ form_start(form, {'action' : path('admin_user_edit', {'id' : user.id})}) }}
             <div class="row">
                 <div class="col-md-12">{{ form_row(form.username) }}</div>
             </div>
@@ -15,8 +15,6 @@
             {{ form_widget(form) }}
 
             <button type="submit" class="btn btn-success btn-sm pull-right">Modifier</button>
-            <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
-            <button class="btn btn-primary btn-sm pull-right">Upgrade</button>
 
         {{ form_end(form) }}
         

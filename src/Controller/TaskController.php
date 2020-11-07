@@ -8,6 +8,7 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,37 +18,72 @@ class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
-     * @IsGranted("ROLE_USER")
      */
-    public function listAction(TaskRepository $taskRepository, UserRepository $userRepository)
+    public function index(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
+        $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
 
-        if($user->getUsername() == "anonyme")
+        if(!$hasAccess)
         {
-            $tasks = $taskRepository->findWithoutUser();
-            foreach($tasks as $task)
-            {
-                $task->setUser($user);
-            }
+            $tasks = $taskRepository->findBy([
+                'user' => $user,
+                'isDone' => FALSE,
+            ]);
         }
         else
         {
-            $tasks = $taskRepository->findBy(
-                ['user' => $user]
-            );
+            $tasks = $taskRepository->findAdminTasks($user);
+
+            foreach ($tasks as $task) {
+                if ($task->getUser() == NULL) {
+                    $task->setUser($anonymous);
+                }
+            }
         }
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
             ]
         );
     }
 
     /**
+     * @Route("/tasks_done", name="task_list_done")
+     */
+    public function listDone(TaskRepository $taskRepository, UserRepository $userRepository): Response
+    {
+        $user = $this->getUser();
+        $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
+
+        if (!$hasAccess) {
+            $tasks = $taskRepository->findBy([
+                'user' => $user,
+                'isDone' => TRUE,
+            ]);
+        } 
+        else 
+        {
+            $tasks = $taskRepository->findAdminDoneTasks($user);
+
+            foreach ($tasks as $task) {
+                if ($task->getUser() == NULL) {
+                    $task->setUser($anonymous);
+                }
+            }
+        }
+
+        return $this->render('task/list.html.twig', [
+            'tasks' => $tasks,
+        ]);
+    }
+
+    /**
      * @Route("/tasks/create", name="task_create")
      */
-    public function createAction(Request $request, EntityManagerInterface $manager)
+    public function taskCreate(Request $request, EntityManagerInterface $manager)
     {
         $user = $this->getUser();
         $task = new Task();
@@ -73,7 +109,7 @@ class TaskController extends AbstractController
      * @Route("/tasks/{id}/edit", name="task_edit")
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function editAction(Task $task, Request $request, EntityManagerInterface $manager)
+    public function taskEdit(Task $task, Request $request, EntityManagerInterface $manager)
     {
         $form = $this->createForm(TaskType::class, $task);
 
@@ -98,12 +134,20 @@ class TaskController extends AbstractController
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function toggleTaskAction(Task $task, EntityManagerInterface $manager)
+    public function toggleTask(Task $task, EntityManagerInterface $manager)
     {
         $task->toggle(!$task->isDone());
-        $manager()->flush();
+        $manager->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        if ($task->isDone())
+        {
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        }
+
+        if (!$task->isDone()) 
+        {
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme non terminée.', $task->getTitle()));
+        }
 
         return $this->redirectToRoute('task_list');
     }
@@ -112,7 +156,7 @@ class TaskController extends AbstractController
      * @Route("/tasks/{id}/delete", name="task_delete")
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function deleteTaskAction(Task $task, EntityManagerInterface $manager)
+    public function taskDelete(Task $task, EntityManagerInterface $manager)
     {
         $manager->remove($task);
         $manager->flush();
