@@ -8,26 +8,27 @@ use App\Form\UserEditType;
 use App\Service\Securizer;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Route("/admin", name="admin_")
- */
+
 class UserController extends AbstractController
 {
     private $encoder;
+    private $security;
    
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, Security $security)
     {
         $this->encoder = $passwordEncoder;
+        $this->security = $security;
     }
 
     /**
-     * @Route("/users", name="user_list")
+     * @Route("/users", name="admin_user_list")
      * @IsGranted("ROLE_ADMIN")
      */
     public function usersList(UserRepository $repository)
@@ -56,8 +57,12 @@ class UserController extends AbstractController
             $manager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+            
+            if ($this->security->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('admin_user_list');
+            }
 
-            return $this->redirectToRoute('admin_user_list');
+            return $this->redirectToRoute('homepage');
         }
 
         return $this->render('user/create.html.twig', [
@@ -66,7 +71,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users/{id}/edit", name="user_edit")
+     * @Route("/users/{id}/edit", name="admin_user_edit")
      * @IsGranted("ROLE_ADMIN")
      */
     public function editAction(User $user, Request $request, EntityManagerInterface $manager, Securizer $securizer)

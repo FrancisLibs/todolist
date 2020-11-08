@@ -5,13 +5,10 @@
 			<img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
 		</div>
 		<div class="navbar-header navbar-right">
-			{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-				{{ app.user.username }}
-			{% endif %}
 
 			{% if is_granted('ROLE_ADMIN') %}
 				<a href="{{ path('admin_user_list') }}" class="btn btn-success ml-2 navbarlink">Administration</a>
-				<a href="{{ path('admin_user_create') }}" class="btn btn-primary ml-2 navbarlink">Inscription</a>
+				<a href="{{ path('user_create') }}" class="btn btn-primary ml-2 navbarlink">Inscription</a>
 			{% endif %}
 
 			{% if app.user %}
@@ -20,6 +17,10 @@
 
 			{% if not app.user and 'login' != app.request.attributes.get('_route') %}
 				<a href="{{ path('app_login') }}" class="btn btn-success ml-2 navbarlink">Connexion</a>
+			{% endif %}
+
+			{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+				<a href="{{ path('user_create') }}" class="btn btn-primary ml-2 navbarlink">Inscription</a>
 			{% endif %}
 		</div>
 	</div>
