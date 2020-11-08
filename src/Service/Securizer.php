@@ -9,16 +9,16 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class Securizer
 {
 
-    private $accessDecisionManager;
+    private $accesDecisionManager;
 
-    public function __construct(AccessDecisionManagerInterface $accessDecisionManager)
+    public function __construct(AccessDecisionManagerInterface $accesDecisionManager)
     {
-        $this->accessDecisionManager = $accessDecisionManager;
+        $this->accesDecisionManager = $accesDecisionManager;
     }
 
     public function isGranted(User $user, $attribute, $object = null)
     {
         $token = new UsernamePasswordToken($user, 'none', 'none', $user->getRoles());
-        return ($this->accessDecisionManager->decide($token, [$attribute], $object));
+        return ($this->accesDecisionManager->decide($token, [$attribute], $object));
     }
 }

@@ -17,7 +17,6 @@ class UserEditType extends AbstractType
         $builder
             ->add('username', TextType::class, ['label' => "Nom d'utilisateur"])
             ->add('email', EmailType::class, ['label' => 'Adresse email'])
-           
 			->add('roles', ChoiceType::class, [
 				'choices' => [
 				    'Utilisateur' => 'ROLE_USER',

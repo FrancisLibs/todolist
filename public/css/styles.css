@@ -1,30 +1,30 @@
 .ligne {
-    height: 3em;
+  height: 3em;
 }
 
 .navbarlink {
-    margin-top: 8px;
-    margin-left: 1em;
+  margin-top: 8px;
+  margin-left: 1em;
 }
 
 .taskstyle {
-    height: 230px;
+  height: 230px;
 }
 
 .tasktitle {
-    height: 40px;
+  height: 40px;
 }
 
 .taskUsername {
-    font-style: italic;
+  font-style: italic;
 }
 
 .taskbutton {
-    margin-top: 5px;
-    margin-left : 5px;
+  margin-top: 5px;
+  margin-left : 5px;
 }
 
 legend {
-    font-size: 14px;
-    font-weight: 700;
+  font-size: 14px;
+  font-weight: 700;
 }
