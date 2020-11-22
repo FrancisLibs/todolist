@@ -1,0 +1,6 @@
+App\Entity\User:
+    id{1..10}:
+        username: username<current()>
+        roles: ["ROLE_USER"]
+        email: <current()>test@gmail.com
+        password: '0000'
