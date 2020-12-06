@@ -180,7 +180,6 @@ class User implements UserInterface
                 $task->setUser(null);
             }
         }
-
         return $this;
     }
 }

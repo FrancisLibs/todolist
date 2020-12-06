@@ -16,4 +16,9 @@ class TaskType extends AbstractType
             //->add('author') ===> must be the user authenticated
         ;
     }
+
+    public function getName()
+    {
+        return 'task';
+    }
 }

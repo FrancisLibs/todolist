@@ -9,31 +9,28 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserTest extends KernelTestCase
 {
-    Public function getEntityTask()
+    private $user;
+    private $task;
+
+    Public function setUp()
     {
-        return $task = (new Task())
-            ->setCreatedAt(new \DateTime('2011-01-01'))
-            ->setTitle("TaskTitle")
-            ->setContent("TaskContent");
-    }
-   
-    Public function getEntityUser()
-    {
-        return $user = (new User())
+        $this->user = (new User())
             ->setUsername('UtilisateurTest')
             ->setRoles(["ROLE_USER"])
             ->setPassword('password')
-            ->setEmail('utilTest@gmail.com')
-            ->addTask($this->getEntityTask());
+            ->setEmail('utilTest@gmail.com');
+   
+        $this->task = (new Task())
+            ->setCreatedAt(new \DateTime('2011-01-01'))
+            ->setTitle("TaskTitle")
+            ->setContent("TaskContent");
     }
 
     public function assertHasErrors(User $user, int $number = 0)
     {
         self::bootKernel();
         $errors = self::$container->get('validator')->validate($user);
-
         $messages = [];
-
         /** @var constraintsViolation $errors */
         foreach ($errors as $error)
         {
@@ -43,70 +40,57 @@ class UserTest extends KernelTestCase
     }
 
     public function testValidEntity()
-    {
-        $user = $this->getEntityUser();
-        $this->assertHasErrors($user, 0);
-        $this->assertEquals("UtilisateurTest", $user->getUserName());
-        $this->assertEquals(["ROLE_USER"], $user->getRoles());
-        $this->assertEquals("password", $user->getPassword());
-        $this->assertEquals("utilTest@gmail.com", $user->getEmail());
-        $taskCollection = $user->getTasks();
-        $date = new \DateTime('2011-01-01');
-        $this->assertEquals($date, $taskCollection->last()->getCreatedAt());
+    { 
+        $this->assertHasErrors($this->user, 0);
+        $this->assertEquals("UtilisateurTest", $this->user->getUserName());
+        $this->assertEquals(["ROLE_USER"], $this->user->getRoles());
+        $this->assertEquals("password", $this->user->getPassword());
+        $this->assertEquals("utilTest@gmail.com", $this->user->getEmail());
     }
 
-    public function testTaskUser()
+    public function testAddAndRemoveTask()
     {
-        $user = $this->getEntityUser();
-        $task = $this->getEntityTask();
+        $this->user->addTask($this->task);
+        $this->assertEquals($this->user, $this->task->getUser());
 
-        $tasksCollection = $user->getTasks();
+        $tasksCollection = $this->user->getTasks();
+        $this->assertEquals(1, count($tasksCollection));
+        
         foreach($tasksCollection as $task)
         {
-            $user->removeTask($task);
+            $this->user->removeTask($task);
         }
-
-        $tasksCollection = $user->getTasks();
-        $this->assertEquals(true, $tasksCollection->isEmpty());
-        
-        $user->addTask($task);
-        $tasksCollection = $user->getTasks();
-        $this->assertNotEmpty($tasksCollection);
+        $tasksCollection = $this->user->getTasks();
+        $this->assertEquals(0, count($tasksCollection));
+        $this->assertEquals(null, $this->task->getUser());
     }
 
     public function testMinLenghtUsername()
     {
-        $this->assertHasErrors($this->getEntityUser()->setUsername("j"), 1);
+        $this->assertHasErrors($this->user->setUsername("j"), 1);
     }
-
     public function testBlankUsername()
     {
-        $this->assertHasErrors($this->getEntityUser()->setUsername(""), 1);
+        $this->assertHasErrors($this->user->setUsername(""), 1);
     }
-
     public function testMinLenghtPassword()
     {
-        $this->assertHasErrors($this->getEntityUser()->setPassword("jkkkk"), 1);
+        $this->assertHasErrors($this->user->setPassword("jkkkk"), 1);
     }
-
     public function testBlankPassword()
     {
-        $this->assertHasErrors($this->getEntityUser()->setPassword(""), 1);
+        $this->assertHasErrors($this->user->setPassword(""), 1);
     }
-
-
     public function testBlankEmail()
     {
-        $this->assertHasErrors($this->getEntityUser()->setEmail(""), 1);
+        $this->assertHasErrors($this->user->setEmail(""), 1);
     }
-
     public function testValidEmail()
     {
-        $this->assertHasErrors($this->getEntityUser()->setPassword("d@f"), 1);
+        $this->assertHasErrors($this->user->setEmail("d@f"), 1);
     }
-
     public function testEmailPattern()
     {
-        $this->assertHasErrors($this->getEntityUser()->setPassword("d@f.com"), 0);
+        $this->assertHasErrors($this->user->setEmail("d@f.com"), 0);
     }
 }

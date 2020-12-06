@@ -8,18 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TaskTest extends KernelTestCase
 {
-    Public function getEntityTask()
+    private $task;
+    private $user;
+
+    Public function setUp()
     {
-        return $task = (new Task())
+        $this->task = (new Task())
             ->setCreatedAt(new \DateTime())
             ->setTitle("TestTask")
-            ->setContent("TestContent")
-            ->setUser($this->getEntityUser());
-    }
+            ->setContent("TestContent");
 
-    Public function getEntityUser()
-    {
-        return $user = (new User())
+        $this->user = (new User())
             ->setUsername('UtilisateurTest')
             ->setRoles(["ROLE_USER"])
             ->setPassword('password')
@@ -41,25 +40,25 @@ class TaskTest extends KernelTestCase
 
     public function testValidEntity()
     {
-        $task = $this->getEntityTask();
-        $this->assertHasErrors($task, 0);
-        $this->assertEquals("TestTask", $task->getTitle());
-        $this->assertEquals("TestContent", $task->getContent());
-        $this->assertEquals($this->getEntityUser(), $task->getUser());
-        $task->toggle(0);
-        $this->assertEquals(0, $task->isDone());
-        $task->toggle(1);
-        $this->assertEquals(1, $task->isDone());
+        $this->assertHasErrors($this->task, 0);
+        $this->assertEquals("TestTask", $this->task->getTitle());
+        $this->assertEquals("TestContent", $this->task->getContent());
+        $this->task->setUser($this->user);
+        $this->assertEquals($this->user, $this->task->getUser());
+        $this->task->toggle(0);
+        $this->assertEquals(0, $this->task->isDone());
+        $this->task->toggle(1);
+        $this->assertEquals(1, $this->task->isDone());
     }
 
     public function testInvalidBlankTaskTitle()
     {
-        $this->assertHasErrors($this->getEntityTask()->setTitle(""), 1);
+        $this->assertHasErrors($this->task->setTitle(""), 1);
     }
 
     public function testInvalidBlankTaskContent()
     {
-        $this->assertHasErrors($this->getEntityTask()->setContent(""), 1);
+        $this->assertHasErrors($this->task->setContent(""), 1);
     }
 
 }

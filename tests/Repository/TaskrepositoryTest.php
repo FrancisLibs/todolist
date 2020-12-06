@@ -15,54 +15,32 @@ class TaskRepositoryTest extends KernelTestCase
 {
     use FixturesTrait;
 
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $entityManager;
-
-    protected function setUp(): void
+    private function getUser($username)
     {
-        $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        return $user = self::$container
+            ->get(UserRepository::class)
+            ->findBy(['username' => $username]);
     }
 
-   /* public function testCount()
-    {
-        self::bootKernel();
-        $this->loadFixtureFiles([__DIR__ . '/TaskRepositoryTestFixtures.yaml']);
-        $tasks = self::$container->get(TaskRepository::class)->count([]);
-        $this->assertEquals(3, $tasks);
-    } */
-    
     public function testFindAdminTasks()
     {
         self::bootKernel();
         $this->loadFixtures([AppFixtures::class]);
-
-        $user = $this->entityManager
-            ->getRepository(User::class)
-            ->find(3);
-
-        $taskRepository = $this->entityManager->getRepository(Task::class);
-        $tasks = $taskRepository->findAdminTasks($user);
-
-        $this->assertEquals(119, count($tasks));
+        $user = $this->getUser('essai');
+        $tasks = self::$container
+            ->get(TaskRepository::class)
+            ->findAdminTasks($user);
+        $this->assertCount(16, $tasks);
     }
 
     public function testFindAdminDoneTasks()
     {
         self::bootKernel();
         $this->loadFixtures([AppFixtures::class]);
-
-        $user = $this->entityManager
-            ->getRepository(User::class)
-            ->find(3);
-
-        $taskRepository = $this->entityManager->getRepository(Task::class);
-        $tasks = $taskRepository->findAdminDoneTasks($user);
-
-        $this->assertEquals(121, count($tasks));
+        $user = $this->getUser('essai');
+        $tasks = self::$container
+            ->get(TaskRepository::class)
+            ->findAdminDoneTasks($user);
+        $this->assertCount(14, $tasks);
     }
 }
