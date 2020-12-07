@@ -21,11 +21,6 @@
                         </h4>
                         <h5 class="taskUsername">
                             Autheur : {{ task.user.username }}
-                            {% if task.done %}
-                                {{ task.done }}
-                            {% else %}
-                                0
-                            {% endif %}
                         </h5>
                         <p>{{ task.content }}</p>
                     </div>

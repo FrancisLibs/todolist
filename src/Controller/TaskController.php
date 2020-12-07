@@ -18,13 +18,13 @@ class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
+     * @IsGranted("ROLE_USER")
      */
     public function index(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
         $hasAccess = $this->isGranted('ROLE_ADMIN');
-
         if(!$hasAccess)
         {
             $tasks = $taskRepository->findBy([
@@ -35,14 +35,12 @@ class TaskController extends AbstractController
         else
         {
             $tasks = $taskRepository->findAdminTasks($user);
-
             foreach ($tasks as $task) {
                 if ($task->getUser() == NULL) {
                     $task->setUser($anonymous);
                 }
             }
         }
-
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
             ]
@@ -51,13 +49,13 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks_done", name="task_list_done")
+     * @IsGranted("ROLE_USER")
      */
     public function listDone(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
         $hasAccess = $this->isGranted('ROLE_ADMIN');
-
         if (!$hasAccess) {
             $tasks = $taskRepository->findBy([
                 'user' => $user,
@@ -67,14 +65,12 @@ class TaskController extends AbstractController
         else 
         {
             $tasks = $taskRepository->findAdminDoneTasks($user);
-
             foreach ($tasks as $task) {
                 if ($task->getUser() == NULL) {
                     $task->setUser($anonymous);
                 }
             }
         }
-
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
         ]);
@@ -85,23 +81,19 @@ class TaskController extends AbstractController
      */
     public function taskCreate(Request $request, EntityManagerInterface $manager)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
             $task->setUser($user);
-            
             $manager->persist($task);
             $manager->flush();
-
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
-
             return $this->redirectToRoute('task_list');
         }
-
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
@@ -112,9 +104,7 @@ class TaskController extends AbstractController
     public function taskEdit(Task $task, Request $request, EntityManagerInterface $manager)
     {
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) 
         {
             $manager->flush();
@@ -123,7 +113,6 @@ class TaskController extends AbstractController
 
             return $this->redirectToRoute('task_list');
         }
-
         return $this->render('task/edit.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
@@ -138,17 +127,14 @@ class TaskController extends AbstractController
     {
         $task->toggle(!$task->isDone());
         $manager->flush();
-
         if ($task->isDone())
         {
             $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
         }
-
         if (!$task->isDone()) 
         {
             $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme non terminée.', $task->getTitle()));
         }
-
         return $this->redirectToRoute('task_list');
     }
 
@@ -160,9 +146,7 @@ class TaskController extends AbstractController
     {
         $manager->remove($task);
         $manager->flush();
-
         $this->addFlash('success', 'La tâche a bien été supprimée.');
-
         return $this->redirectToRoute('task_list');
     }
 }

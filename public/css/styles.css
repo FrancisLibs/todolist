@@ -8,11 +8,11 @@
 }
 
 .taskstyle {
-  height: 230px;
+  height: 250px;
 }
 
 .tasktitle {
-  height: 40px;
+  height: 2em;
 }
 
 .taskUsername {
@@ -21,7 +21,7 @@
 
 .taskbutton {
   margin-top: 5px;
-  margin-left : 5px;
+  margin-left: 5px;
 }
 
 legend {

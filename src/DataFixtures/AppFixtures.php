@@ -22,6 +22,20 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
 
+        for($j=0;$j<15;$j++)// Tasks without users
+        {
+            $task  = new Task();
+            $task->setTitle($faker->sentence());
+            $task->setContent($faker->text(250));
+            $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
+            $task->isDone();
+            if($j > 7)
+            {
+                $task->toggle(1);
+            }
+            $manager->persist($task);
+        }
+
         //USERS
         for($i=0;$i<15;$i++){
             $user  = new User();
@@ -41,21 +55,14 @@ class AppFixtures extends Fixture
                     $user->setUsername('admin');
                     $user->setRoles(['ROLE_ADMIN']);
                     break;
+                case 3:
+                    $user->setUsername('user');
+                    $user->setRoles(['ROLE_USER']);
+                    break;
             }
             $manager->persist($user);
 
-            for($j=0;$j<15;$j++)// TASK WITHOUT USER
-            {
-                $task  = new Task();
-                $task->setTitle($faker->sentence());
-                $task->setContent($faker->text(250));
-                $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
-                $task->isDone();
-                $task->toggle(boolval(rand(0,1)));
-                $manager->persist($task);
-            }
-
-            for($j=0;$j<15;$j++)//TASK WITH USER
+            for($j=0;$j<15;$j++)//Tasks with users
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());
@@ -63,7 +70,7 @@ class AppFixtures extends Fixture
                 $task->setCreatedAt($faker->dateTimeBetween('-100 days'));
                 $task->setUser($user);
                 $task->isDone();
-                $task->toggle(boolval(rand(0,1)));
+                if($j > 7){$task->toggle(1);}
                 $manager->persist($task);
             }
         }

@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -26,6 +28,11 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Length(
+     *      min = 2,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      allowEmptyString = false
+     * )
      */
     private $username;
 
@@ -48,6 +55,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Email()
+     * @Assert\NotBlank
      */
     private $email;
 
@@ -172,7 +180,6 @@ class User implements UserInterface
                 $task->setUser(null);
             }
         }
-
         return $this;
     }
 }
