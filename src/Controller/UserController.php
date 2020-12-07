@@ -46,13 +46,10 @@ class UserController extends AbstractController
     {       
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
- 
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) 
+        if($form->isSubmitted() && $form->isValid()) 
         {          
             $user->setPassword($this->encoder->encodePassword($user, 'password'));
-        
             $manager->persist($user);
             $manager->flush();
 
@@ -64,7 +61,6 @@ class UserController extends AbstractController
 
             return $this->redirectToRoute('homepage');
         }
-
         return $this->render('user/create.html.twig', [
             'form' => $form->createView()
         ]);
