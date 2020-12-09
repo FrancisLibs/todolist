@@ -2,7 +2,7 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for C:\wamp64\www\P8\p8TodoList\src\Service</title>
+  <title>Dashboard for C:\wamp64\www\P8\p8TodoList\src\Repository</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../.css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="../.css/nv.d3.min.css" rel="stylesheet" type="text/css">
@@ -17,7 +17,7 @@
       <nav aria-label="breadcrumb">
        <ol class="breadcrumb">
          <li class="breadcrumb-item"><a href="../index.html">C:\wamp64\www\P8\p8TodoList\src</a></li>
-         <li class="breadcrumb-item"><a href="index.html">Service</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Repository</a></li>
          <li class="breadcrumb-item active">(Dashboard)</li>
 
        </ol>
@@ -155,7 +155,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,2], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -173,7 +173,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#methodCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,2], "Method Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,4], "Method Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -223,7 +223,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([[100,2,"<a href=\"Securizer.php.html#9\">App\\Service\\Securizer<\/a>"]], 'Class Complexity'))
+      .datum(getComplexityData([[100,3,"<a href=\"TaskRepository.php.html#15\">App\\Repository\\TaskRepository<\/a>"],[100,1,"<a href=\"UserRepository.php.html#18\">App\\Repository\\UserRepository<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);
@@ -247,7 +247,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Method Complexity');
 
     d3.select('#methodComplexity svg')
-      .datum(getComplexityData([[100,1,"<a href=\"Securizer.php.html#14\">App\\Service\\Securizer::__construct<\/a>"],[100,1,"<a href=\"Securizer.php.html#19\">App\\Service\\Securizer::isGranted<\/a>"]], 'Method Complexity'))
+      .datum(getComplexityData([[100,1,"<a href=\"TaskRepository.php.html#17\">App\\Repository\\TaskRepository::__construct<\/a>"],[100,1,"<a href=\"TaskRepository.php.html#25\">App\\Repository\\TaskRepository::findAdminTasks<\/a>"],[100,1,"<a href=\"TaskRepository.php.html#39\">App\\Repository\\TaskRepository::findAdminDoneTasks<\/a>"],[100,1,"<a href=\"UserRepository.php.html#20\">App\\Repository\\UserRepository::__construct<\/a>"]], 'Method Complexity'))
       .transition()
       .duration(500)
       .call(chart);
