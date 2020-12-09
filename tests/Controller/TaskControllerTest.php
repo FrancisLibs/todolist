@@ -99,7 +99,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertTrue(0 < $query->getSingleScalarResult());
     }
 
-    public function testAccessTaskEditNoUser()
+    public function testAccessTaskEditWithoutUser()
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);

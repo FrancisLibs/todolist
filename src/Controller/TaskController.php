@@ -18,6 +18,9 @@ class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
+     * @param TaskRepository $taskRepository
+     * @param UserRepository $userRepository
+     * @return Response
      * @IsGranted("ROLE_USER")
      */
     public function index(TaskRepository $taskRepository, UserRepository $userRepository): Response
@@ -49,6 +52,9 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks_done", name="task_list_done")
+     * @param TaskRepository $taskRepository
+     * @param UserRepository $userRepository
+     * @return Response
      * @IsGranted("ROLE_USER")
      */
     public function listDone(TaskRepository $taskRepository, UserRepository $userRepository): Response
@@ -78,6 +84,9 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/create", name="task_create")
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
      */
     public function taskCreate(Request $request, EntityManagerInterface $manager)
     {
@@ -99,6 +108,10 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
+     * @param Task $task
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse|Response
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function taskEdit(Task $task, Request $request, EntityManagerInterface $manager)
@@ -121,6 +134,9 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @param Task $task
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function toggleTask(Task $task, EntityManagerInterface $manager)
@@ -140,6 +156,9 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
+     * @param Task $task
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function taskDelete(Task $task, EntityManagerInterface $manager)

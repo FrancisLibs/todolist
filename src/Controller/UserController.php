@@ -29,6 +29,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users", name="admin_user_list")
+     * @param UserRepository $repository
+     * @return response
      * @IsGranted("ROLE_ADMIN")
      */
     public function usersList(UserRepository $repository)
@@ -41,6 +43,9 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/create", name="user_create")
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return RedirectResponse|Response
      */
     public function userCreate(Request $request, EntityManagerInterface $manager)
     {       
@@ -54,11 +59,9 @@ class UserController extends AbstractController
             $manager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
-            
             if ($this->security->isGranted('ROLE_ADMIN')) {
                 return $this->redirectToRoute('admin_user_list');
             }
-
             return $this->redirectToRoute('homepage');
         }
         return $this->render('user/create.html.twig', [
@@ -68,23 +71,23 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/edit", name="admin_user_edit")
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param Securizer $securizer
+     * @return RedirectResponse|Response
      * @IsGranted("ROLE_ADMIN")
      */
     public function editAction(User $user, Request $request, EntityManagerInterface $manager, Securizer $securizer)
     {
         $form = $this->createForm(UserEditType::class, $user);
-        
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) 
         {
             $manager->flush();
-
             $this->addFlash('success', "L'utilisateur a bien été modifié");
-
             return $this->redirectToRoute('admin_user_list');
         }
-
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }
