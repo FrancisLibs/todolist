@@ -10,6 +10,11 @@ body {
   margin-right: 0.25em;
 }
 
+.table-borderless td,
+.table-borderless th {
+  border: 0 !important;
+}
+
 .table-bordered > thead > tr > td {
   border-bottom-width: 1px;
 }
@@ -27,11 +32,6 @@ body {
 
 .table .progress {
   margin-bottom: inherit;
-}
-
-.table-borderless th,
-.table-borderless td {
-  border: 0 !important;
 }
 
 .table tbody tr.covered-by-large-tests,
@@ -75,15 +75,7 @@ td.big {
 }
 
 td.codeLine {
-  font-family: "Source Code Pro", 
-    "SFMono-Regular", 
-    Menlo, 
-    Monaco, 
-    Consolas,
-    "Liberation Mono", 
-    "Courier New", 
-    monospace
-  ;
+  font-family: "Source Code Pro", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   white-space: pre;
 }
 
@@ -131,13 +123,7 @@ span.danger {
 }
 
 svg text {
-  font-family: "Lucida Grande", 
-    "Lucida Sans Unicode", 
-    Verdana, 
-    Arial, 
-    Helvetica,
-    sans-serif
-  ;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   color: #666;
   fill: #666;
