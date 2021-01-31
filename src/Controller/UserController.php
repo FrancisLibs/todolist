@@ -20,43 +20,51 @@ class UserController extends AbstractController
 {
     private $encoder;
     private $security;
+    private $manager;
    
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, Security $security)
-    {
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, 
+        Security $security, EntityManagerInterface $entityManager
+    ) {
         $this->encoder = $passwordEncoder;
         $this->security = $security;
+        $this->manager = $entityManager;
     }
 
     /**
-     * @Route("/users", name="admin_user_list")
-     * @param UserRepository $repository
-     * @return response
+     * Show user list if user is administrator
+     * 
+     * @Route("/users",         name="admin_user_list")
+     * @param                   UserRepository $repository
+     * @return                  response
      * @IsGranted("ROLE_ADMIN")
      */
     public function usersList(UserRepository $repository)
     {
         $users = $repository->findAll();
-        return $this->render('user/list.html.twig', [
+        return $this->render(
+            'user/list.html.twig', [
             'users' => $users
-        ]);
+            ]
+        );
     }
 
     /**
+     * Show create user form
+     * 
      * @Route("/users/create", name="user_create")
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return RedirectResponse|Response
+     * @param                  Request                $request
+     * @param                  EntityManagerInterface $manager
+     * @return                 RedirectResponse|Response
      */
-    public function userCreate(Request $request, EntityManagerInterface $manager)
+    public function userCreate(Request $request)
     {       
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) 
-        {          
+        if($form->isSubmitted() && $form->isValid()) {          
             $user->setPassword($this->encoder->encodePassword($user, 'password'));
-            $manager->persist($user);
-            $manager->flush();
+            $this->manager->persist($user);
+            $this->manager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
             if ($this->security->isGranted('ROLE_ADMIN')) {
@@ -64,30 +72,38 @@ class UserController extends AbstractController
             }
             return $this->redirectToRoute('homepage');
         }
-        return $this->render('user/create.html.twig', [
+        return $this->render(
+            'user/create.html.twig', [
             'form' => $form->createView()
-        ]);
+            ]
+        );
     }
 
     /**
+     * Show edit user form
+     * 
      * @Route("/users/{id}/edit", name="admin_user_edit")
-     * @param User $user
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @param Securizer $securizer
-     * @return RedirectResponse|Response
+     * @param                     User                   $user
+     * @param                     Request                $request
+     * @param                     EntityManagerInterface $manager
+     * @param                     Securizer              $securizer
+     * @return                    RedirectResponse|Response
      * @IsGranted("ROLE_ADMIN")
      */
-    public function editAction(User $user, Request $request, EntityManagerInterface $manager, Securizer $securizer)
+    public function userEdit(User $user, Request $request)
     {
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-            $manager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->flush();
             $this->addFlash('success', "L'utilisateur a bien été modifié");
             return $this->redirectToRoute('admin_user_list');
         }
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render(
+            'user/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user
+            ]
+        );
     }
 }

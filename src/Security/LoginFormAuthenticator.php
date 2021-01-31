@@ -64,15 +64,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) 
-        {
+        if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
 
-        if (!$user) 
-        {
+        if (!$user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Username could not be found.');
         }
@@ -86,8 +84,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     }
 
     /**
-    * Used to upgrade (rehash) the user's password automatically over time.
-    */
+     * Used to upgrade (rehash) the user's password automatically over time.
+     */
     public function getPassword($credentials): ?string
     {
         return $credentials['password'];
@@ -95,8 +93,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) 
-        {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
         return new RedirectResponse($this->urlGenerator->generate('homepage'));

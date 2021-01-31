@@ -16,45 +16,63 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends AbstractController
 {
+    private $manager;
+
+    public function __construct(EntityManagerInterface $manager)
+    {
+        $this->manager = $manager;
+    }
     /**
-     * @Route("/tasks", name="task_list")
-     * @param TaskRepository $taskRepository
-     * @param UserRepository $userRepository
-     * @return Response
+     * Show task list to do
+     * 
+     * @Route("/tasks_undone", name="task_list_undone")
+     * @param                  TaskRepository $taskRepository
+     * @param                  UserRepository $userRepository
+     * @return                 Response
+     * 
      * @IsGranted("ROLE_USER")
      */
-    public function index(TaskRepository $taskRepository, UserRepository $userRepository): Response
+    public function ListUndone(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
         $hasAccess = $this->isGranted('ROLE_ADMIN');
-        if(!$hasAccess)
-        {
-            $tasks = $taskRepository->findBy([
-                'user' => $user,
-                'isDone' => FALSE,
-            ]);
-        }
-        else
-        {
+        if($hasAccess) {
+            // If user has Administrator role, anonymous tasks are added
             $tasks = $taskRepository->findAdminTasks($user);
             foreach ($tasks as $task) {
-                if ($task->getUser() == NULL) {
+                if ($task->getUser() == null) {
                     $task->setUser($anonymous);
                 }
             }
+
+            return $this->render(
+                'task/list.html.twig', [
+                'tasks' => $tasks,
+                ]
+            );
         }
-        return $this->render('task/list.html.twig', [
+
+        $tasks = $taskRepository->findBy(
+            [
+            'user' => $user,
+            'isDone' => false,
+            ]
+        );
+        return $this->render(
+            'task/list.html.twig', [
             'tasks' => $tasks,
             ]
         );
     }
 
     /**
-     * @Route("/tasks_done", name="task_list_done")
-     * @param TaskRepository $taskRepository
-     * @param UserRepository $userRepository
-     * @return Response
+     * Show done task list 
+     * 
+     * @Route("/tasks_done",   name="task_list_done")
+     * @param                  TaskRepository $taskRepository
+     * @param                  UserRepository $userRepository
+     * @return                 Response
      * @IsGranted("ROLE_USER")
      */
     public function listDone(TaskRepository $taskRepository, UserRepository $userRepository): Response
@@ -63,109 +81,127 @@ class TaskController extends AbstractController
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
         $hasAccess = $this->isGranted('ROLE_ADMIN');
         if (!$hasAccess) {
-            $tasks = $taskRepository->findBy([
+            $tasks = $taskRepository->findBy(
+                [
                 'user' => $user,
-                'isDone' => TRUE,
-            ]);
+                'isDone' => true,
+                ]
+            );
         } 
         else 
         {
+            // If user has Administrator role, anonymous tasks are added
             $tasks = $taskRepository->findAdminDoneTasks($user);
             foreach ($tasks as $task) {
-                if ($task->getUser() == NULL) {
+                if ($task->getUser() == null) {
                     $task->setUser($anonymous);
                 }
             }
         }
-        return $this->render('task/list.html.twig', [
+        return $this->render(
+            'task/list.html.twig', [
             'tasks' => $tasks,
-        ]);
+            ]
+        );
     }
 
     /**
+     * Show create task form
+     * 
      * @Route("/tasks/create", name="task_create")
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return Response
+     * @param                  Request                $request
+     * @param                  EntityManagerInterface $manager
+     * @return                 Response
+     *
+     * @IsGranted("ROLE_USER")
      */
-    public function taskCreate(Request $request, EntityManagerInterface $manager)
+    public function taskCreate(Request $request)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($user);
-            $manager->persist($task);
-            $manager->flush();
+            $this->manager->persist($task);
+            $this->manager->flush();
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
-    }
-
-    /**
-     * @Route("/tasks/{id}/edit", name="task_edit")
-     * @param Task $task
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return RedirectResponse|Response
-     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
-     */
-    public function taskEdit(Task $task, Request $request, EntityManagerInterface $manager)
-    {
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-            $manager->flush();
-
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
-
-            return $this->redirectToRoute('task_list');
-        }
-        return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
-            'task' => $task,
+        return $this->render('task/create.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/tasks/{id}/toggle", name="task_toggle")
-     * @param Task $task
-     * @param EntityManagerInterface $manager
-     * @return RedirectResponse
+     * Show edit task form
+     * 
+     * @Route("/tasks/{id}/edit", name="task_edit")
+     * @param                     Task                   $task
+     * @param                     Request                $request
+     * @param                     EntityManagerInterface $manager
+     * @return                    RedirectResponse|Response
      * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function toggleTask(Task $task, EntityManagerInterface $manager)
+    public function taskEdit(Task $task, Request $request)
     {
-        $task->toggle(!$task->isDone());
-        $manager->flush();
-        if ($task->isDone())
-        {
-            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $form = $this->createForm(TaskType::class, $task);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->flush();
+
+            $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+            return $this->redirectToRoute('task_list_undone');
         }
-        if (!$task->isDone()) 
-        {
-            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme non terminée.', $task->getTitle()));
-        }
-        return $this->redirectToRoute('task_list');
+        return $this->render(
+            'task/edit.html.twig', [
+            'form' => $form->createView(),
+            'task' => $task,
+            ]
+        );
     }
 
     /**
-     * @Route("/tasks/{id}/delete", name="task_delete")
-     * @param Task $task
-     * @param EntityManagerInterface $manager
-     * @return RedirectResponse
-     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
+     * Toggle task action
+     * 
+     * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @param                       Task                   $task
+     * @param                       EntityManagerInterface $manager
+     * @return                      RedirectResponse
+     * @Security ("is_granted('ROLE_USER') and user === task.getUser()")
      */
-    public function taskDelete(Task $task, EntityManagerInterface $manager)
+    public function toggleTask(Task $task)
     {
-        $manager->remove($task);
-        $manager->flush();
+        $task->toggle(!$task->isDone());
+        $this->manager->flush();
+        if ($task->isDone()) {
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        }
+        if (!$task->isDone()) {
+            $this->addFlash('success', 
+                sprintf('La tâche %s a bien été marquée comme non terminée.', 
+                    $task->getTitle()
+                )
+            );
+        }
+        return $this->redirectToRoute('task_list_undone');
+    }
+
+    /**
+     * Delete task action
+     * 
+     * @Route("/tasks/{id}/delete", name="task_delete")
+     * @param                       Task                   $task
+     * @param                       EntityManagerInterface $manager
+     * @return                      RedirectResponse
+     * @Security                    ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
+     */
+    public function taskDelete(Task $task)
+    {
+        $this->manager->remove($task);
+        $this->manager->flush();
         $this->addFlash('success', 'La tâche a bien été supprimée.');
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('task_list_undone');
     }
 }

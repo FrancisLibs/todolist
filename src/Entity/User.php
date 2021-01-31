@@ -14,8 +14,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"username"}, message="Le nom proposé n'est plus disponible")
- * @UniqueEntity(fields={"email"}, message="Cette adresse mail n'est plus disponible")
+ * @UniqueEntity(fields={"username"},                 message="Le nom proposé n'est plus disponible")
+ * @UniqueEntity(fields={"email"},                    message="Cette adresse mail n'est plus disponible")
  */
 class User implements UserInterface
 {
@@ -30,7 +30,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Length(
      *      min = 2,
-     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      minMessage = "Votre identifiant doit avoir au moins {{ limit }} charactères",
      *      allowEmptyString = false
      * )
      */
@@ -42,7 +42,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var                       string The hashed password
      * @ORM\Column(type="string")
      * @Assert\Length(
      *      min = 6,

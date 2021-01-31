@@ -56,7 +56,6 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "classmap-authoritative": true,
         "preferred-install": {
             "*": "dist"
         },
