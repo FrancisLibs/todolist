@@ -27,23 +27,22 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
-        $hasAccess = $this->isGranted('ROLE_ADMIN');
-        if(!$hasAccess)
-        {
-            $tasks = $taskRepository->findBy([
-                'user' => $user,
-                'isDone' => FALSE,
-            ]);
-        }
-        else
+
+        if($this->isGranted('ROLE_ADMIN'))
         {
             $tasks = $taskRepository->findAdminTasks($user);
             foreach ($tasks as $task) {
-                if ($task->getUser() == NULL) {
-                    $task->setUser($anonymous);
-                }
+                if ($task->getUser() == NULL) {$task->setUser($anonymous);}
             }
+            return $this->render('task/list.html.twig', [
+                'tasks' => $tasks,
+            ]);
         }
+
+        $tasks = $taskRepository->findBy([
+            'user' => $user,
+            'isDone' => FALSE,
+        ]);
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
             ]
@@ -61,22 +60,23 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
-        $hasAccess = $this->isGranted('ROLE_ADMIN');
-        if (!$hasAccess) {
-            $tasks = $taskRepository->findBy([
-                'user' => $user,
-                'isDone' => TRUE,
-            ]);
-        } 
-        else 
+
+        if ($this->isGranted('ROLE_ADMIN')) 
         {
             $tasks = $taskRepository->findAdminDoneTasks($user);
-            foreach ($tasks as $task) {
-                if ($task->getUser() == NULL) {
-                    $task->setUser($anonymous);
-                }
+            foreach ($tasks as $task) 
+            {
+                if ($task->getUser() == NULL) {$task->setUser($anonymous);}
             }
-        }
+            return $this->render('task/list.html.twig', [
+                'tasks' => $tasks,
+            ]);
+        } 
+
+        $tasks = $taskRepository->findBy([
+            'user' => $user,
+            'isDone' => TRUE,
+        ]);
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
         ]);

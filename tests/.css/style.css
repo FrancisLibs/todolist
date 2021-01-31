@@ -12,7 +12,7 @@ body {
 
 .table-borderless td,
 .table-borderless th {
-  border: 0 !important;
+  border: 0;
 }
 
 .table-bordered > thead > tr > td {
