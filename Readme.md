@@ -5,15 +5,15 @@ The main objective of this training is to learn about web application developmen
 
 ## 1. Environnement
 
-- WampServer 3.2.3.0
-- Apache 2.4.41
-- PHP 7.4.6
-- MySQL 8.0.18
-- Composer 1.10.8
-- Git 2.27
-- Symfony 5.1
-- JQuery 3.4.1
-- Bootstrap 4.4.1
+-    WampServer 3.2.3.0
+-    Apache 2.4.41
+-    PHP 7.4.6
+-    MySQL 8.0.18
+-    Composer 1.10.8
+-    Git 2.27
+-    Symfony 5.1
+-    JQuery 3.4.1
+-    Bootstrap 4.4.1
 
 ## 2. Installation
 
@@ -27,10 +27,10 @@ Git facilitate the download from GitHub by your system : [Git](https://git-scm.c
 ### a. Files deployments
 It Is possible to use 2 different methods:
 
-- By “hand”: copy the entire repository from GitHub to your pc repository.
+-   By “hand”: copy the entire repository from GitHub to your pc repository.
   Repository by GitHub address: [Git/todolist](https://github.com/FrancisLibs/todolist.git)
 
-- Or (easier) clone the repository from GitHub by your Pc with a git command (it need to install first Git): [git clone](https://github.com/FrancisLibs/snowtricks.git).
+-   Or (easier) clone the repository from GitHub by your Pc with a git command (it need to install first Git): [git clone](https://github.com/FrancisLibs/snowtricks.git).
 
 After installing the files, it is necessary to install the dependencies. Use the composer command:
 composer install.
@@ -49,8 +49,8 @@ php bin/console doctrine:database:create
 
 Open a new console, and create it with 2 commands:
 
-1. php bin/console doctrine:migrations:diff  
-2. php bin/console doctrine:migrations:migrate
+1.  php bin/console doctrine:migrations:diff  
+2.  php bin/console doctrine:migrations:migrate
 
 If the first command not works, verify if the php -ver command is functional and show the version of php. If the command not work, be sure that the system variable PATH, contain the php.exe route.
 
