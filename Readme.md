@@ -5,15 +5,15 @@ The main objective of this training is to learn about web application developmen
 
 ## 1. Environnement
 
--    WampServer 3.2.3.0
--    Apache 2.4.41
--    PHP 7.4.6
--    MySQL 8.0.18
--    Composer 1.10.8
--    Git 2.27
--    Symfony 5.1
--    JQuery 3.4.1
--    Bootstrap 4.4.1
+*   WampServer 3.2.3.0
+*   Apache 2.4.41
+*   PHP 7.4.6
+*   MySQL 8.0.18
+*   Composer 1.10.8
+*   Git 2.27
+*   Symfony 5.1
+*   JQuery 3.4.1
+*   Bootstrap 4.4.1
 
 ## 2. Installation
 
