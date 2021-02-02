@@ -27,10 +27,10 @@ Git facilitate the download from GitHub by your system : [Git](https://git-scm.c
 ### a. Files deployments
 It Is possible to use 2 different methods:
 
--   By “hand”: copy the entire repository from GitHub to your pc repository.
+*   By “hand”: copy the entire repository from GitHub to your pc repository.
   Repository by GitHub address: [Git/todolist](https://github.com/FrancisLibs/todolist.git)
 
--   Or (easier) clone the repository from GitHub by your Pc with a git command (it need to install first Git): [git clone](https://github.com/FrancisLibs/snowtricks.git).
+*   Or (easier) clone the repository from GitHub by your Pc with a git command (it need to install first Git): [git clone](https://github.com/FrancisLibs/snowtricks.git).
 
 After installing the files, it is necessary to install the dependencies. Use the composer command:
 composer install.
