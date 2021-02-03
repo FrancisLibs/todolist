@@ -32,7 +32,7 @@ class TaskControllerTest extends WebTestCase
     public function provideUrls()
     {
         return [
-            ['/tasks'],
+            ['/tasks_undone'],
             ['/tasks_done']
         ];
     }
@@ -62,7 +62,7 @@ class TaskControllerTest extends WebTestCase
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
         $client= $this->userConnexion($client, 'essai');
-        $client->request('GET', '/tasks');
+        $client->request('GET', '/tasks_undone');
         $this->assertResponseIsSuccessful();
     }
 
@@ -88,7 +88,7 @@ class TaskControllerTest extends WebTestCase
             'task[content]' => 'Test content',
         ]);
         $client->followRedirect();
-        $this->assertEquals('App\Controller\TaskController::index', $client->getRequest()->attributes->get('_controller'));
+        $this->assertEquals('App\Controller\TaskController::listUndone', $client->getRequest()->attributes->get('_controller'));
        
         // Test insert in database
         $kernel = self::bootKernel();

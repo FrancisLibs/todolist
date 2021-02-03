@@ -32,7 +32,7 @@ class TaskController extends AbstractController
      * 
      * @IsGranted("ROLE_USER")
      */
-    public function ListUndone(TaskRepository $taskRepository, UserRepository $userRepository): Response
+    public function listUndone(TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
@@ -158,7 +158,7 @@ class TaskController extends AbstractController
      * @param                       Task                   $task
      * @param                       EntityManagerInterface $manager
      * @return                      RedirectResponse
-     * @Security ("is_granted('ROLE_USER') and user === task.getUser()")
+     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function toggleTask(Task $task)
     {
