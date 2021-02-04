@@ -158,7 +158,8 @@ class TaskController extends AbstractController
      * @param                       Task                   $task
      * @param                       EntityManagerInterface $manager
      * @return                      RedirectResponse
-     * @Security ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
+     * 
+     * @Security ("(is_granted('ROLE_ADMIN') and task.getUser() === NULL ) or (is_granted('ROLE_USER') and user === task.getUser())")
      */
     public function toggleTask(Task $task)
     {
