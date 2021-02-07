@@ -22,21 +22,10 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for($j=0;$j<15;$j++)    // Tasks without users
-        {
-            $task  = new Task();
-            $task->setTitle($faker->sentence());
-            $task->setContent($faker->text(250));
-            $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
-            $task->isDone();
-            if($j > 7)
-            {
-                $task->toggle(1);
-            }
-            $manager->persist($task);
-        }
+        // Tasks without user
+        $this->createTasks($faker, 15, "", $manager);
 
-        //USERS
+        // Users
         for($i=0;$i<15;$i++){       // Creation of 15 users
             $user  = new User();
             $user->setEmail($faker->email);
@@ -62,22 +51,28 @@ class AppFixtures extends Fixture
             }
             $manager->persist($user);
 
-            for($j=0;$j<15;$j++)    //Tasks with users
-            {
-                $task  = new Task();
-                $task->setTitle($faker->sentence());
-                $task->setContent($faker->text(250));
-                $task->setCreatedAt($faker->dateTimeBetween('-100 days'));
-                $task->setUser($user);
-                $task->isDone();
-                if($j > 7)
-                {
-                    $task->toggle(1);
-                }
-                $manager->persist($task);
-            }
+            // Tasks with user
+            $this->createTasks($faker, 15, $user, $manager);
         }
-
         $manager->flush();
+    }
+
+    public function createTasks($faker, $taskNumber, $user, $manager)
+    {
+        for($j=0;$j<15;$j++)
+        {
+            $task  = new Task();
+            $task->setTitle($faker->sentence());
+            $task->setContent($faker->text(250));
+            $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
+            if($user instanceof User)
+            {
+                $task->setUser($user);
+            }
+            $task->isDone();
+            if($j > 7){$task->toggle(1);}
+
+            $manager->persist($task);
+        }
     }
 }

@@ -128,7 +128,7 @@ label {
     text-align: left;
   }
 
-  .table td:before {
+  .table td::before {
     content: "";
   }
 }

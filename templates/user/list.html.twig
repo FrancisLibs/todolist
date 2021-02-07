@@ -15,29 +15,16 @@
                 <thead>
                     <tr>
                         <th>#</th>
-<<<<<<< HEAD
-                        <th>Nom d'utilisateur</th>
-                        <th>Adresse d'utilisateur</th>
-                        <th>Rôle</th>
-                        <th>Actions</th>
-=======
                         <th class="text-center">Nom d'utilisateur</th>
                         <th class="text-center">Adresse d'utilisateur</th>
                         <th class="text-center">Rôle</th>
                         <th class="text-center">Actions</th>
->>>>>>> responsive
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
-<<<<<<< HEAD
-                            <td data-label=”Nom”>{{ user.username }}</td>
-                            <td data-label=”Adresse”>{{ user.email }}</td>
-                            <td data-label=”Rôle”>{% for role in user.roles %}{{ role ~ " " }}{% endfor %}</td>
-                            <td data-label=””><a href="{{ path('admin_user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a></td>
-=======
                             <td data-label="Nom" class="text-center">{{ user.username }}</td>
                             <td data-label="Adresse" class="text-center">{{ user.email }}</td>
                             <td data-label="Rôle" class="text-center">{% for role in user.roles %}{{ role ~ " " }}{% endfor %}</td>
@@ -50,7 +37,6 @@
                                     </form>
                                 </div>
                             </td>
->>>>>>> responsive
                         </tr>
                     {% endfor %}
                 </tbody>
