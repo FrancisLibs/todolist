@@ -106,4 +106,39 @@ class UserController extends AbstractController
             ]
         );
     }
+
+    /**
+     * Delete user
+     * 
+     * @Route("/user/{id}/delete", name="user_delete")
+     * @param                       User                   $user
+     * @param                       EntityManagerInterface $manager
+     * @return                      RedirectResponse
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function userDelete(User $user, Request $request)
+    {
+        $submittedToken = $request->request->get('token');
+        $userActuel = $this->getUser();
+
+        if ($this->isCsrfTokenValid('delete-user', $submittedToken)) 
+        {
+            //dd($user, $userActuel);
+            if($user <> $userActuel)
+            {
+                $this->manager->remove($user);
+                $this->manager->flush();
+                $this->addFlash('success', 'L\'utilisateur a bien été supprimé.');
+                return $this->redirectToRoute('admin_user_list');
+            }
+
+            if($user == $userActuel)
+            {
+                $this->addFlash('error', 'Vous ne pouvez pas vous supprimer vous-même');
+                return $this->redirectToRoute('admin_user_list');
+            }
+        }
+        $this->addFlash('error', 'L\'utilisateur n\'a pas été supprimé.');
+        return $this->redirectToRoute('admin_user_list');
+    }
 }

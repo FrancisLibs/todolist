@@ -161,20 +161,28 @@ class TaskController extends AbstractController
      * 
      * @Security ("(is_granted('ROLE_ADMIN') and task.getUser() === NULL ) or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function toggleTask(Task $task)
+    public function toggleTask(Task $task, Request $request)
     {
-        $task->toggle(!$task->isDone());
-        $this->manager->flush();
-        if ($task->isDone()) {
-            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $submittedToken = $request->request->get('token');
+        
+        if ($this->isCsrfTokenValid('toggle-item', $submittedToken)) 
+        {
+            $task->toggle(!$task->isDone());
+            $this->manager->flush();
+            if ($task->isDone()) {
+                $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+            }
+            if (!$task->isDone()) {
+                $this->addFlash('success', 
+                    sprintf('La tâche %s a bien été marquée comme non terminée.', 
+                        $task->getTitle()
+                    )
+                );
+            }
+            return $this->redirectToRoute('task_list_undone');
         }
-        if (!$task->isDone()) {
-            $this->addFlash('success', 
-                sprintf('La tâche %s a bien été marquée comme non terminée.', 
-                    $task->getTitle()
-                )
-            );
-        }
+
+        $this->addFlash('error', 'La tâche n\'a pas été modifiée.');
         return $this->redirectToRoute('task_list_undone');
     }
 
@@ -187,11 +195,18 @@ class TaskController extends AbstractController
      * @return                      RedirectResponse
      * @Security                    ("is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function taskDelete(Task $task)
+    public function taskDelete(Task $task, Request $request)
     {
-        $this->manager->remove($task);
-        $this->manager->flush();
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+        $submittedToken = $request->request->get('token');
+
+        if ($this->isCsrfTokenValid('delete-item', $submittedToken)) 
+        {
+            $this->manager->remove($task);
+            $this->manager->flush();
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+            return $this->redirectToRoute('task_list_undone');
+        }
+        $this->addFlash('error', 'La tâche n\'a pas été supprimée.');
         return $this->redirectToRoute('task_list_undone');
     }
 }
