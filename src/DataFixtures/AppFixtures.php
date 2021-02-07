@@ -22,7 +22,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for($j=0;$j<15;$j++)// Tasks without users
+        for($j=0;$j<15;$j++)    // Tasks without users
         {
             $task  = new Task();
             $task->setTitle($faker->sentence());
@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
         }
 
         //USERS
-        for($i=0;$i<15;$i++){
+        for($i=0;$i<15;$i++){       // Creation of 15 users
             $user  = new User();
             $user->setEmail($faker->email);
             $user->setPassword($this->encoder->encodePassword($user,'password'));
@@ -62,7 +62,7 @@ class AppFixtures extends Fixture
             }
             $manager->persist($user);
 
-            for($j=0;$j<15;$j++)//Tasks with users
+            for($j=0;$j<15;$j++)    //Tasks with users
             {
                 $task  = new Task();
                 $task->setTitle($faker->sentence());
@@ -70,10 +70,14 @@ class AppFixtures extends Fixture
                 $task->setCreatedAt($faker->dateTimeBetween('-100 days'));
                 $task->setUser($user);
                 $task->isDone();
-                if($j > 7){$task->toggle(1);}
+                if($j > 7)
+                {
+                    $task->toggle(1);
+                }
                 $manager->persist($task);
             }
         }
+
         $manager->flush();
     }
 }

@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="ligne">
-        <a href="{{ path('task_create') }}" class="btn btn-info pull-right">Créer une tâche</a>
+        <a href="{{ path('task_create') }}" class="btn btn-info pull-right mb-2">Créer une tâche</a>
     </div>
     <div class="row">
         {% for task in tasks %}
@@ -20,13 +20,18 @@
                             {% endif %}
                         </h4>
                         <h5 class="taskUsername">
-                            Autheur : {{ task.user.username }}
+                            {% if task.user is null %}
+                                Autheur : Annonyme
+                            {% else %}
+                                Autheur : {{ task.user.username }}
+                            {% endif %}
                         </h5>
                         <p>{{ task.content }}</p>
                     </div>
-                    <div>
-                        <form action="{{ path('task_toggle', {'id' : task.id }) }}">
-                            <button class="btn btn-success btn-sm pull-right taskbutton">
+                    <div class="d-flex justify-content-start">
+                        <form action="{{ path('task_toggle', {'id' : task.id }) }}" method="post">
+                            <input type="hidden" name="token" value="{{ csrf_token('toggle-item') }}"/>
+                            <button class="btn btn-success btn-sm pull-right taskbutton mb-2 mr-3">
                                 {% if not task.isDone %}
                                     Marquer comme faite
                                 {% else %}
@@ -34,8 +39,10 @@
                                 {% endif %}
                             </button>
                         </form>
-                        <form action="{{ path('task_delete', {'id' : task.id }) }}">
-                            <button class="btn btn-danger btn-sm pull-right taskbutton">Supprimer</button>
+                    
+                        <form action="{{ path('task_delete', {id : task.id }) }}" method="post">
+                            <input type="hidden" name="token" value="{{ csrf_token('delete-item') }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm pull-right taskbutton">Supprimer</button>
                         </form>
                     </div>
                 </div>

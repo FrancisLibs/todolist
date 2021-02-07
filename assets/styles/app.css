@@ -1,3 +1,153 @@
 body {
-    background-color: rgb(224, 86, 86);
+  padding-top: 26px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+/* Navbar */
+.navbar .container .titre {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar .container .menu {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.navbar .container .navbarlink {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* Titre page accueil */
+.gd_format {
+  display: none;
+}
+
+.pt_format {
+  margin-top: 13px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.slide-image {
+  width: 100%;
+  min-height: 300px;
+}
+
+footer {
+  margin: 50px 0;
+}
+
+/* Login */
+label {
+  font-size: 0.9rem;
+}
+
+/* Tableau des utilisateurs */
+.table thead {
+  display: none;
+}
+
+.table tr {
+  display: block;
+  margin-bottom: 40px;
+}
+
+.table td {
+  display: block;
+  text-align: center;
+}
+
+.table td:before {
+  content: attr(data-label);
+  float: left;
+  font-weight: bold;
+}
+
+.btn-user {
+  width : 77px;
+}
+
+/* Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+  /* navbar */
+  .navbar .container .titre {
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .navbar .container .menu {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .gd_format {
+    display: inline-block;
+    text-align: center;
+    margin-top: 13px;
+    margin-bottom: 15px;
+  }
+
+  .pt_format {
+    display: none;
+  }
+}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+  /* Tableau des utilisateurs */
+  .table thead {
+    display: contents;
+  }
+
+  .table tr {
+    display: table-row;
+    margin-bottom: 40px;
+  }
+
+  .table td {
+    display: table-cell;
+    text-align: left;
+  }
+
+  .table td:before {
+    content: "";
+  }
+}
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+  .gd_format {
+    display: inline-block;
+    text-align: left;
+    width: 60%;
+    margin-top: 13px;
+    margin-bottom: 15px;
+  }
+}
+
+/* X-Large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+}
+
+/* XX-Large devices (larger desktops, 1400px and up)*/
+@media (min-width: 1400px) {
 }
