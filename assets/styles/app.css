@@ -74,10 +74,10 @@ label {
 }
 
 .btn-user {
-  width : 77px;
+  width: 77px;
 }
 
-/* Small devices (landscape phones, 576px and up)*/
+/* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   /* navbar */
   .navbar .container .titre {
@@ -111,7 +111,7 @@ label {
   }
 }
 
-/* Medium devices (tablets, 768px and up)*/
+/* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   /* Tableau des utilisateurs */
   .table thead {
@@ -133,7 +133,7 @@ label {
   }
 }
 
-/* Large devices (desktops, 992px and up)*/
+/* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
   .gd_format {
     display: inline-block;
