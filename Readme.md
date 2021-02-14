@@ -1,8 +1,8 @@
 # Projet8: TodoList
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/81e5ab36a51a4e1397307c494a853784)](https://www.codacy.com/gh/FrancisLibs/todolist/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FrancisLibs/todolist&amp;utm_campaign=Badge_Grade)
 
-This site was created in order to study the Symfony framework (V5.1), as part of an application developer training. The subject is à todo list.
-The main objective of this training is to learn about web application development with the Symfony framework and how it is possible to improve an existing application. The work also consists of producing documentation explaining how the authentication of users of the application works.
+This site was created in order to study the Symfony framework (V5.1), as part of an application developer training. The subject is a todo list.
+The main objective of this training is to learn the development of web applications with the Symfony framework and how it is possible to improve an existing application. The work also consists of providing additional functionalities, improving security, as well as producing documentation explaining how the authentication of users of the application works and for contributors to the project, giving indications for their collaboration.
 
 ## 1. Environnement
 
