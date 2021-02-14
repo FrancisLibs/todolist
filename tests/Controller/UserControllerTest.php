@@ -13,52 +13,69 @@ class UserControllerTest extends WebTestCase
 {
     use FixturesTrait;
     use ConnectUserTrait;
-    
+
+    /**
+     * The display of users list is constrained
+     *
+     * @return void
+     */
     public function testUsersListIsRestricted()
     {
         $client = self::createClient();
         $this->loadFixtures([AppFixtures::class]);
+        
+        // Without connection
         $client->request('GET', '/users');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorTextContains('button', "Se connecter");
+
+        // With a no admin user
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/users');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
 
-    public function testUsersListIsRestrictedToAdmin()
-    {
-        $client = self::createClient();
-        $this->loadFixtures([AppFixtures::class]);
+        // With an administrator
         $client= $this->userConnexion($client, 'admin');
         $client->request('GET', '/users');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('h1', 'Liste des utilisateurs');
     }
 
+    /**
+     * Creation of user by everyone
+     *
+     * @return void
+     */
     public function testUserCreateIsUnrestricted()
     {
         $client = self::createClient();
         $this->loadFixtures([AppFixtures::class]);
         $client->request('GET', '/users/create');
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('button', 'Ajouter');
     }
 
+    /**
+     * Display the user creation form
+     *
+     * @return void
+     */
     public function testUserCreateDisplayForm()
     {
         $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
         $client->request('GET', '/users/create');
-        $this->assertSelectorTextContains('button', 'Ajouter');
+        $this->assertSelectorTextContains('button', 'Créer');
     }
 
+    /**
+     * Creation of user
+     *
+     * @return void
+     */
     public function testUserCreate()
     {
         $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client->request('GET', '/users/create');
-        // Remplissage formulaire
-        $client->submitForm('Ajouter', [
+        $crawler = $client->request('GET', '/users/create');
+        $buttonCrawlerNode = $crawler->selectButton('Créer');
+        $form = $buttonCrawlerNode->form([
             'user[username]'    => 'TestUsername',
             'user[email]' => 'testEmail@gmail.com',
             'user[password]' => [
@@ -66,8 +83,9 @@ class UserControllerTest extends WebTestCase
                 'second' => 'password'
             ],
         ]);
+        $client->submit($form);
         $client->followRedirect();
-        $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
+        $this->assertSelectorTextContains('.alert.alert-success', "L'utilisateur a bien été ajouté.");
         // Test insert in database
         $kernel = self::bootKernel();
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
@@ -77,32 +95,43 @@ class UserControllerTest extends WebTestCase
         $this->assertTrue(0 < $query->getSingleScalarResult());
     }
 
+    /**
+     * The edition of a user is constrained
+     *
+     * @return void
+     */
     public function testUserEditIsRestricted()
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
+        
+        // Wirh no connection
         $client->request('GET', '/users/1/edit');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorTextContains('button', "Se connecter");
+        
+        // With a no admin user
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/users/1/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testUserEditAllowWithAdmin()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
+       
+        // With an administrator
         $client= $this->userConnexion($client, 'admin');
         $client->request('GET', '/users/1/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+    /**
+     * Test of modification of user by admin
+     *
+     * @return void
+     */
     public function testUserEditAdmin()
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
         $userRepository = static::$container->get(UserRepository::class);
-        /** @var User $userTest */
+        
         $user = $userRepository->find(1);
         $client= $this->userConnexion($client, 'admin');
         $client->request('GET', '/users/' . $user->getId() . '/edit');

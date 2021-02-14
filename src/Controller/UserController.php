@@ -110,7 +110,7 @@ class UserController extends AbstractController
     /**
      * Delete user
      * 
-     * @Route("/user/{id}/delete", name="user_delete")
+     * @Route("/user/{id}/delete", name="user_delete", methods="delete")
      * @param                       User                   $user
      * @param                       EntityManagerInterface $manager
      * @return                      RedirectResponse
@@ -119,12 +119,10 @@ class UserController extends AbstractController
     public function userDelete(User $user, Request $request)
     {
         $submittedToken = $request->request->get('token');
-        $userActuel = $this->getUser();
-
+        $currentUser = $this->getUser();
         if ($this->isCsrfTokenValid('delete-user', $submittedToken)) 
         {
-            //dd($user, $userActuel);
-            if($user <> $userActuel)
+            if($user <> $currentUser)
             {
                 $this->manager->remove($user);
                 $this->manager->flush();
@@ -132,7 +130,7 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('admin_user_list');
             }
 
-            if($user == $userActuel)
+            if($user == $currentUser)
             {
                 $this->addFlash('error', 'Vous ne pouvez pas vous supprimer vous-même');
                 return $this->redirectToRoute('admin_user_list');

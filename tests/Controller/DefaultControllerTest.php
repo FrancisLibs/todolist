@@ -18,7 +18,6 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
     }
 
     public function testPageIsUnrestricted()

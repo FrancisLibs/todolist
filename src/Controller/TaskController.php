@@ -52,6 +52,7 @@ class TaskController extends AbstractController
             'user' => $user,
             'isDone' => FALSE,
         ]);
+
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
         ]);
@@ -152,7 +153,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * Toggle task action
+     * Toggle task
      * 
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      * @param                       Task                   $task
@@ -187,9 +188,9 @@ class TaskController extends AbstractController
     }
 
     /**
-     * Delete task action
+     * Delete task
      * 
-     * @Route("/tasks/{id}/delete", name="task_delete")
+     * @Route("/tasks/{id}/delete", name="task_delete", methods="DELETE")
      * @param                       Task                   $task
      * @param                       EntityManagerInterface $manager
      * @return                      RedirectResponse

@@ -12,7 +12,7 @@ use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class TaskControllerTest extends WebTestCase
+class TaskControllerATest extends WebTestCase
 {
     use FixturesTrait;
     use ConnectUserTrait;
@@ -20,10 +20,14 @@ class TaskControllerTest extends WebTestCase
     /**
     * @dataProvider provideUrls
     */
-    public function testIndexIsRestricted($url)
+    public function testTaskListIsRestricted($url)
     {
         $client = self::createClient();
         $this->loadFixtures([AppFixtures::class]);
+        // Without connexion
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+        // With a connected user
         $client= $this->userConnexion($client, 'user'); 
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -63,7 +67,7 @@ class TaskControllerTest extends WebTestCase
         $this->loadFixtures([AppFixtures::class]);
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/tasks_undone');
-        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.btn.btn-success', 'Marquer comme faite');
     }
 
     public function testDoneTaskList()
@@ -72,8 +76,7 @@ class TaskControllerTest extends WebTestCase
         $this->loadFixtures([AppFixtures::class]);
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/tasks_done');
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('button'); // Affichage du formulaire création de tâche
+        $this->assertSelectorExists('.btn.btn-success', 'Marquer non terminée'); // Affichage du bouton du formulaire de création de tâche
     }
 
     public function testTaskCreate()
@@ -145,59 +148,5 @@ class TaskControllerTest extends WebTestCase
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/tasks/' . $task->getId() . '/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testEditTaskByOwner()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai');
-        $taskRepository = static::$container->get(TaskRepository::class);
-         /** @var Task $taskTest */
-        $task = $taskRepository->find(16);
-        // Task with user's Id = 1 (essai)
-        $client->request('GET', '/tasks/' . $task->getId() . '/edit');
-        $client->submitForm('Modifier', [
-            'task[title]'    => 'TestTitle',
-            'task[content]' => 'Test content',
-        ]);
-        $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success');
-    }
-
-    public function testToggleTask()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'admin');
-        $client->request('GET', '/tasks/1/toggle');
-        $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success');
-    }
-
-    public function testTaskDeleteByAdmin()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'admin');
-        $taskRepository = static::$container->get(TaskRepository::class);
-         /** @var Task $taskTest */
-        $task = $taskRepository->find(16);
-        $client->request('GET', '/tasks/' . $task->getId() . '/delete');
-        $task = $taskRepository->find(16);
-        $this->assertEquals(null, $task);
-    }
-
-    public function testTaskDeleteByOwner()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai');
-        $taskRepository = static::$container->get(TaskRepository::class);
-        /** @var Task $taskTest */
-        $task = $taskRepository->find(16);
-        $client->request('GET', '/tasks/' . $task->getId() . '/delete');
-        $task = $taskRepository->find(16);
-        $this->assertEquals(null, $task);
     }
 }

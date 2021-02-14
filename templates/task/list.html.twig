@@ -42,8 +42,10 @@
                     
                         <form action="{{ path('task_delete', {id : task.id }) }}" method="post">
                             <input type="hidden" name="token" value="{{ csrf_token('delete-item') }}"/>
+                            <input type="hidden" name = "_method" value = "DELETE">
                             <button type="submit" class="btn btn-danger btn-sm pull-right taskbutton">Supprimer</button>
                         </form>
+
                     </div>
                 </div>
             </div>
