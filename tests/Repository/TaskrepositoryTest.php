@@ -22,14 +22,14 @@ class TaskRepositoryTest extends KernelTestCase
             ->findBy(['username' => $username]);
     }
 
-    public function testFindAdminTasks()
+    public function testFindAdminUndoneTasks()
     {
         self::bootKernel();
         $this->loadFixtures([AppFixtures::class]);
         $user = $this->getUser('essai');
         $tasks = self::$container
             ->get(TaskRepository::class)
-            ->findAdminTasks($user);
+            ->findAdminUndoneTasks($user);
         $this->assertCount(16, $tasks);
     }
 

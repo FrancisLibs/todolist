@@ -30,7 +30,7 @@
                             <td data-label="Rôle" class="text-center">{% for role in user.roles %}{{ role ~ " " }}{% endfor %}</td>
                             <td data-label="Actions" class="text-center">
                                 <div class="d-flex justify-content-center">
-                                    <a href="{{ path('admin_user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm btn-user ml-2 mr-2 text-center">Edit</a>
+                                    <a href="{{ path('admin_user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm btn-user ml-2 me-2 text-center">Edit</a>
                                     <form action="{{ path('user_delete', {id : user.id }) }}" method="post">
                                         <input type="hidden" name="token" value="{{ csrf_token('delete-user') }}"/>
                                         <input type="hidden" name = "_method" value = "DELETE">

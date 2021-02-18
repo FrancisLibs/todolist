@@ -31,14 +31,33 @@ class TaskControllerATest extends WebTestCase
         $client= $this->userConnexion($client, 'user'); 
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextContains('.btn.btn-info', 'Créer une tâche');
     }
 
     public function provideUrls()
     {
         return [
-            ['/tasks_undone'],
-            ['/tasks_done']
+            ['/tasks/0'],
+            ['/tasks/1']
         ];
+    }
+
+    public function testUndoneTaskList()
+    {
+        $client = static::createClient();
+        $this->loadFixtures([AppFixtures::class]);
+        $client= $this->userConnexion($client, 'essai');
+        $client->request('GET', '/tasks/0');
+        $this->assertSelectorExists('.glyphicon.glyphicon-ok');
+    }
+
+    public function testDoneTaskList()
+    {
+        $client = static::createClient();
+        $this->loadFixtures([AppFixtures::class]);
+        $client= $this->userConnexion($client, 'essai');
+        $client->request('GET', '/tasks/1');
+        $this->assertSelectorExists('.glyphicon.glyphicon-ok');
     }
     
     public function testTaskCreateIsRedirect()
@@ -59,24 +78,6 @@ class TaskControllerATest extends WebTestCase
         $client->request('GET', '/tasks/create');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('button'); // Affichage du formulaire création de tâche
-    }
-    
-    public function testUndoneTaskList()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai');
-        $client->request('GET', '/tasks_undone');
-        $this->assertSelectorTextContains('.btn.btn-success', 'Marquer comme faite');
-    }
-
-    public function testDoneTaskList()
-    {
-        $client = static::createClient();
-        $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai');
-        $client->request('GET', '/tasks_done');
-        $this->assertSelectorExists('.btn.btn-success', 'Marquer non terminée'); // Affichage du bouton du formulaire de création de tâche
     }
 
     public function testTaskCreate()

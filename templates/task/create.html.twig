@@ -3,13 +3,17 @@
 {% block body %}
     {{ form_start(form, {'action' : path('task_create')}) }}
         <div class="row">
-            <div class="col">
-                {{ form_widget(form) }}
+            <div>
+                {{ form_row(form.title) }}
+            </div>
+            <div>
+                {{ form_row(form.content) }}
             </div>
         </div>
-        <button type="submit" class="btn btn-success pull-right mb-2">Ajouter</button>
+
+        <button type="submit" class="btn btn-success pull-right mb-2 mt-2">Ajouter</button>
     {{ form_end(form) }}
     <div class="d-flex justify-content-center">
-        <a href="{{ path('task_list_undone') }}" class="btn btn-primary">Retour à la liste des tâches</a>
+        <a href="{{ path('task_list', {'done': 0}) }}" class="btn btn-primary">Retour à la liste des tâches</a>
     </div>
 {% endblock %}

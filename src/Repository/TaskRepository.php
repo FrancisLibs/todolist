@@ -22,27 +22,14 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Tasks[]
      */
-    public function findAdminTasks($user): array
+    public function findAdminTasks($user, $done): array
     {
         return $this->createQueryBuilder('t')
             ->where('t.user = :val')
             ->setParameter('val', $user)
             ->orWhere('t.user is NULL')
-            ->andWhere('t.isDone = FALSE')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @return Tasks[]
-     */
-    public function findAdminDoneTasks($user): array
-    {
-        return $this->createQueryBuilder('t')
-            ->where('t.user = :val')
-            ->setParameter('val', $user)
-            ->orWhere('t.user is NULL')
-            ->andWhere('t.isDone = TRUE')
+            ->andWhere('t.isDone = :val')
+            ->setParameter('val', $done)
             ->getQuery()
             ->getResult();
     }

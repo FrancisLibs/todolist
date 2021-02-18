@@ -7,6 +7,7 @@ use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,23 +24,31 @@ class TaskController extends AbstractController
         $this->manager = $manager;
     }
     /**
-     * Show task list to do
+     * Show task list
      * 
-     * @Route("/tasks_undone", name="task_list_undone")
+     * @Route("/tasks/list/{done}", name="task_list")
      * @param                  TaskRepository $taskRepository
      * @param                  UserRepository $userRepository
      * @return                 Response
      * 
      * @IsGranted("ROLE_USER")
      */
-    public function listUndone(TaskRepository $taskRepository, UserRepository $userRepository): Response
+    public function tasksList(int $done, TaskRepository $taskRepository, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
 
         if($this->isGranted('ROLE_ADMIN'))
         {
-            $tasks = $taskRepository->findAdminTasks($user);
+            if($done)
+            {
+                $tasks = $taskRepository->findAdminTasks($user, TRUE);
+            }
+            else
+            {
+                $tasks = $taskRepository->findAdminTasks($user, FALSE);
+            }
+
             foreach ($tasks as $task) {
                 if ($task->getUser() == NULL) {$task->setUser($anonymous);}
             }
@@ -52,47 +61,10 @@ class TaskController extends AbstractController
             'user' => $user,
             'isDone' => FALSE,
         ]);
-
+        
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
         ]);
-    }
-
-    /**
-     * Show done task list 
-     * 
-     * @Route("/tasks_done",   name="task_list_done")
-     * @param                  TaskRepository $taskRepository
-     * @param                  UserRepository $userRepository
-     * @return                 Response
-     * @IsGranted("ROLE_USER")
-     */
-    public function listDone(TaskRepository $taskRepository, UserRepository $userRepository): Response
-    {
-        $user = $this->getUser();
-        $anonymous = $userRepository->findOneBy(['username' => 'anonyme']);
-
-        if ($this->isGranted('ROLE_ADMIN')) 
-        {
-            // If user has Administrator role, anonymous tasks are added
-            $tasks = $taskRepository->findAdminDoneTasks($user);
-            foreach ($tasks as $task) 
-            {
-                if ($task->getUser() == NULL) {$task->setUser($anonymous);}
-            }
-            return $this->render('task/list.html.twig', [
-                'tasks' => $tasks,
-            ]);
-        } 
-
-        $tasks = $taskRepository->findBy([
-            'user' => $user,
-            'isDone' => TRUE,
-        ]);
-        return $this->render('task/list.html.twig', [
-            'tasks' => $tasks,
-            ]
-        );
     }
 
     /**
@@ -164,26 +136,18 @@ class TaskController extends AbstractController
      */
     public function toggleTask(Task $task, Request $request)
     {
-        $submittedToken = $request->request->get('token');
-        
-        if ($this->isCsrfTokenValid('toggle-item', $submittedToken)) 
-        {
-            $task->toggle(!$task->isDone());
-            $this->manager->flush();
-            if ($task->isDone()) {
-                $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
-            }
-            if (!$task->isDone()) {
-                $this->addFlash('success', 
-                    sprintf('La tâche %s a bien été marquée comme non terminée.', 
-                        $task->getTitle()
-                    )
-                );
-            }
-            return $this->redirectToRoute('task_list_undone');
+        $task->toggle(!$task->isDone());
+        $this->manager->flush();
+        if ($task->isDone()) {
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
         }
-
-        $this->addFlash('error', 'La tâche n\'a pas été modifiée.');
+        if (!$task->isDone()) {
+            $this->addFlash('success', 
+                sprintf('La tâche %s a bien été marquée comme non terminée.', 
+                    $task->getTitle()
+                )
+            );
+        }
         return $this->redirectToRoute('task_list_undone');
     }
 

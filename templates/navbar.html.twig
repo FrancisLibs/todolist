@@ -7,20 +7,20 @@
 		<div class="navbar-header navbar-right menu">
 
 			{% if is_granted('ROLE_ADMIN') %}
-				<a href="{{ path('admin_user_list') }}" class="btn btn-success ml-2 navbarlink">Administration</a>
-				<a href="{{ path('user_create') }}" class="btn btn-primary ml-2 navbarlink">Inscription</a>
+				<a href="{{ path('admin_user_list') }}" class="btn btn-success me-2 navbarlink">Administration</a>
+				<a href="{{ path('user_create') }}" class="btn btn-primary me-2 navbarlink">Inscription</a>
 			{% endif %}
 
 			{% if app.user %}
-				<a href="{{ path('app_logout') }}" class="pull-right btn btn-danger ml-2 navbarlink">Déconnexion</a>
+				<a href="{{ path('app_logout') }}" class="pull-right btn btn-danger me-2 navbarlink">Déconnexion</a>
 			{% endif %}
 
 			{% if not app.user and 'login' != app.request.attributes.get('_route') %}
-				<a href="{{ path('app_login') }}" class="btn btn-success ml-2 navbarlink">Connexion</a>
+				<a href="{{ path('app_login') }}" class="btn btn-success me-2 navbarlink">Connexion</a>
 			{% endif %}
 
 			{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-				<a href="{{ path('user_create') }}" class="btn btn-primary ml-2 navbarlink">Inscription</a>
+				<a href="{{ path('user_create') }}" class="btn btn-primary me-2 navbarlink">Inscription</a>
 			{% endif %}
 		</div>
 	</div>
