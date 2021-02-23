@@ -1,5 +1,6 @@
 body {
-  padding-top: 26px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  padding-top: 26px;
 }
 
 h1 {
