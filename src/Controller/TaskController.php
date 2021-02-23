@@ -88,7 +88,7 @@ class TaskController extends AbstractController
             $this->manager->persist($task);
             $this->manager->flush();
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
-            return $this->redirectToRoute('task_list_undone');
+            return $this->redirectToRoute('task_list', ['done' => 0]);
         }
         return $this->render('task/create.html.twig', [
             'form' => $form->createView()
@@ -114,7 +114,7 @@ class TaskController extends AbstractController
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
-            return $this->redirectToRoute('task_list_undone');
+            return $this->redirectToRoute('task_list', ['done' => 0]);
         }
         return $this->render(
             'task/edit.html.twig', [
@@ -138,17 +138,19 @@ class TaskController extends AbstractController
     {
         $task->toggle(!$task->isDone());
         $this->manager->flush();
-        if ($task->isDone()) {
+        if ($task->isDone()) 
+        {
             $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
         }
-        if (!$task->isDone()) {
+        if (!$task->isDone()) 
+        {
             $this->addFlash('success', 
                 sprintf('La tâche %s a bien été marquée comme non terminée.', 
                     $task->getTitle()
                 )
             );
         }
-        return $this->redirectToRoute('task_list_undone');
+        return $this->redirectToRoute('task_list', ['done' => 0]);
     }
 
     /**
@@ -169,9 +171,9 @@ class TaskController extends AbstractController
             $this->manager->remove($task);
             $this->manager->flush();
             $this->addFlash('success', 'La tâche a bien été supprimée.');
-            return $this->redirectToRoute('task_list_undone');
+            return $this->redirectToRoute('task_list', ['done' => 0]);
         }
         $this->addFlash('error', 'La tâche n\'a pas été supprimée.');
-        return $this->redirectToRoute('task_list_undone');
+        return $this->redirectToRoute('task_list', ['done' => 0]);
     }
 }

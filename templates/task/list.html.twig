@@ -35,16 +35,14 @@
                         <p>{{ task.content }}</p>
                     </div>
                     <div class="d-flex justify-content-start">
-                        <form action="{{ path('task_toggle', {'id' : task.id }) }}" method="post">
-                            <button class="btn btn-success btn-sm pull-right taskbutton mb-2 me-3">
-                                {% if task.isDone %}
-                                    Marquer non terminée
-                                {% else %}
-                                    Marquer comme faite
-                                {% endif %}
-                            </button>
-                        </form>
-                        <form action="{{ path('task_delete', {id : task.id }) }}" method="post">
+                        <button class="btn btn-success btn-sm pull-right taskbutton mb-2 me-3">
+                            {% if task.isDone %}
+                                <a href="{{ path('task_toggle', {'id' : task.id }) }}">Marquer non terminée</a>
+                            {% else %}
+                                <a href="{{ path('task_toggle', {'id' : task.id }) }}">Marquer comme faite</a>
+                            {% endif %}
+                        </button>
+                        <form name="task" action="{{ path('task_delete', {id : task.id }) }}" method="post">
                             <input type="hidden" name="token" value="{{ csrf_token('delete-item') }}"/>
                             <input type="hidden" name = "_method" value = "DELETE">
                             <button type="submit" class="btn btn-danger btn-sm pull-right taskbutton">Supprimer</button>

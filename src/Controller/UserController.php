@@ -110,7 +110,7 @@ class UserController extends AbstractController
     /**
      * Delete user
      * 
-     * @Route("/user/{id}/delete", name="user_delete", methods="delete")
+     * @Route("/user/{id}/delete", name="user_delete", methods="DELETE")
      * @param                       User                   $user
      * @param                       EntityManagerInterface $manager
      * @return                      RedirectResponse

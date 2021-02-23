@@ -26,10 +26,10 @@ class TaskRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
         $this->loadFixtures([AppFixtures::class]);
-        $user = $this->getUser('essai');
+        $user = $this->getUser('admin');
         $tasks = self::$container
             ->get(TaskRepository::class)
-            ->findAdminUndoneTasks($user);
+            ->findAdminTasks($user, 0);
         $this->assertCount(16, $tasks);
     }
 
@@ -37,10 +37,10 @@ class TaskRepositoryTest extends KernelTestCase
     {
         self::bootKernel();
         $this->loadFixtures([AppFixtures::class]);
-        $user = $this->getUser('essai');
+        $user = $this->getUser('admin');
         $tasks = self::$container
             ->get(TaskRepository::class)
-            ->findAdminDoneTasks($user);
+            ->findAdminTasks($user, 1);
         $this->assertCount(14, $tasks);
     }
 }
