@@ -35,9 +35,8 @@ class TaskToggleControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
-        $taskRepository = static::$container->get(TaskRepository::class);
         $client= $this->userConnexion($client, 'admin');
-        $crawler = $client->request('GET', '/tasks/46/toggle');
+        $client->request('GET', '/tasks/46/toggle');
         $client->followRedirect();
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe !');
     }
@@ -48,7 +47,7 @@ class TaskToggleControllerTest extends WebTestCase
         $this->loadFixtures([AppFixtures::class]);
         $taskRepository = static::$container->get(TaskRepository::class);
         $client= $this->userConnexion($client, 'essai');
-        $crawler = $client->request('GET', '/tasks/16/toggle');
+        $client->request('GET', '/tasks/16/toggle');
         $client->followRedirect();
         $this->assertSelectorTextContains('.alert.alert-success', 'Superbe !');
     }
@@ -59,7 +58,7 @@ class TaskToggleControllerTest extends WebTestCase
         $this->loadFixtures([AppFixtures::class]);
         $taskRepository = static::$container->get(TaskRepository::class);
         $client= $this->userConnexion($client, 'essai');
-        $crawler = $client->request('GET', '/tasks/15/toggle');
+        $client->request('GET', '/tasks/15/toggle');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN); // Code 404
     }
 
