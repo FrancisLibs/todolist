@@ -75,8 +75,15 @@ td.big {
 }
 
 td.codeLine {
-  font-family: "Source Code Pro", "SFMono-Regular", Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    "Source Code Pro",
+    "SFMono-Regular",
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   white-space: pre;
 }
 
@@ -124,7 +131,12 @@ span.danger {
 }
 
 svg text {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica,
+  font-family:
+    "Lucida Grande",
+    "Lucida Sans Unicode",
+    Verdana,
+    Arial,
+    Helvetica,
     sans-serif;
   font-size: 11px;
   color: #666;
