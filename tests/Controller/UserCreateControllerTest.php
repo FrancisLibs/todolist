@@ -63,8 +63,8 @@ class UserCreateControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.alert.alert-success', "L'utilisateur a bien été ajouté.");
         // Test insert in database
         $kernel = self::bootKernel();
-        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT count(u.id) from App\Entity\User u WHERE u.username = :username AND u.email = :email');
+        $manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $query = $manager->createQuery('SELECT count(u.id) from App\Entity\User u WHERE u.username = :username AND u.email = :email');
         $query->setParameter('username', 'TestUsername');
         $query->setParameter('email', 'testEmail@gmail.com');
         $this->assertTrue(0 < $query->getSingleScalarResult());
@@ -88,13 +88,5 @@ class UserCreateControllerTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
         $this->assertSelectorTextContains('h1', "Liste des utilisateurs");
-        
-       /* // Test insert in database
-        $kernel = self::bootKernel();
-        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT count(u.id) from App\Entity\User u WHERE u.username = :username AND u.email = :email');
-        $query->setParameter('username', 'TestUsername');
-        $query->setParameter('email', 'testEmail@gmail.com');
-        $this->assertTrue(0 < $query->getSingleScalarResult());*/
     }
 }

@@ -24,17 +24,17 @@ class UserDeleteControllerTest extends WebTestCase
         $client = self::createClient();
         // Without connexion
         $this->loadFixtures([AppFixtures::class]);
-        $crawler = $client->request('GET', '/user/1/delete'); 
+        $client->request('GET', '/user/1/delete'); 
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
 
         // With User connected
         $client= $this->userConnexion($client, 'essai');
-        $crawler = $client->request('GET', '/user/1/delete');
+        $client->request('GET', '/user/1/delete');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED); 
 
         // With admin connected
         $client= $this->userConnexion($client, 'admin');
-        $crawler = $client->request('GET', '/user/1/delete');
+        $client->request('GET', '/user/1/delete');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 

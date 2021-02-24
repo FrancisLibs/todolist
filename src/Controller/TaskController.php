@@ -134,7 +134,7 @@ class TaskController extends AbstractController
      * 
      * @Security ("(is_granted('ROLE_ADMIN') and task.getUser() === NULL ) or (is_granted('ROLE_USER') and user === task.getUser())")
      */
-    public function toggleTask(Task $task, Request $request)
+    public function toggleTask(Task $task)
     {
         $task->toggle(!$task->isDone());
         $this->manager->flush();

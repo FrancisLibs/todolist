@@ -52,8 +52,8 @@ class TaskCreateControllerTest extends WebTestCase
         $this->assertEquals('App\Controller\TaskController::tasksList', $client->getRequest()->attributes->get('_controller'));
         // Test insert in database
         $kernel = self::bootKernel();
-        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT count(t.id) from App\Entity\Task t WHERE t.title = :title AND t.content = :content');
+        $manager = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $query = $manager->createQuery('SELECT count(t.id) from App\Entity\Task t WHERE t.title = :title AND t.content = :content');
         $query->setParameter('title', 'TestTitle');
         $query->setParameter('content', 'Test content');
         $this->assertTrue(0 < $query->getSingleScalarResult());
