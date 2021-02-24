@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
 
     public function createTasks($faker, $taskNumber, $user, $manager)
     {
-        for($j=0;$j<15;$j++)
+        for($j=0;$j<$taskNumber;$j++)
         {
             $task  = new Task();
             $task->setTitle($faker->sentence());
