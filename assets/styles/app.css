@@ -3,7 +3,7 @@ body {
   padding-top: 26px;
 }
 
-h1 {
+.h1 {
   font-size: 2rem;
 }
 
@@ -78,6 +78,11 @@ label {
   width: 77px;
 }
 
+.taskbutton a {
+  color: white;
+  text-decoration: none;
+}
+
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) {
   /* navbar */
@@ -102,7 +107,7 @@ label {
 
   .gd_format {
     display: inline-block;
-    text-align: center;
+    text-align: left;
     margin-top: 13px;
     margin-bottom: 15px;
   }
@@ -139,7 +144,7 @@ label {
   .gd_format {
     display: inline-block;
     text-align: left;
-    width: 60%;
+    width: 70%;
     margin-top: 13px;
     margin-bottom: 15px;
   }
