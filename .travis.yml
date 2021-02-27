@@ -1,9 +1,17 @@
 language: php
-php:
-  - '7.4.6'
 
 os: windows
 
+services:
+    - mysql
+
+php:
+  - 7.4.6
+
+install:
+  - composer install --prefer-dist --no-interaction
+  - php bin/console doctrine:database:create --env=test
+  - php bin/console doctrine:schema:update --force --env=test
+
 script:
-   - composer install
-   - php bin/phpunit tests
+  - ./vendor/bin/simple-phpunit --coverage-text --colors

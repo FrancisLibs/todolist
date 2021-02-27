@@ -2,7 +2,6 @@
 
 namespace App\tests\Controller;
 
-use App\DataFixtures\AppFixtures;
 use App\Tests\Controller\ConnectUserTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
@@ -10,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    use FixturesTrait;
     use ConnectUserTrait;
     
     public function testIndex()      
