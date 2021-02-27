@@ -7,9 +7,10 @@ php:
   - 7.4.6
 
 install:
-  - composer install --prefer-dist --no-interaction
+  - composer install --no-interaction
+  - echo "USE sqlite;\nUPDATE user SET password=PASSWORD('${MYSQL_PASSWORD}') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
   - php bin/console doctrine:database:create --env=test
   - php bin/console doctrine:schema:update --force --env=test
 
 script:
-  - ./vendor/bin/simple-phpunit --coverage-text --colors
+  - ./bin/phpunit tests
