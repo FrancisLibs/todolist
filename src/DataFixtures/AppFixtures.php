@@ -26,14 +26,13 @@ class AppFixtures extends Fixture
         $this->createTasks($faker, 15, "", $manager);
 
         // Users
-        for($i=0;$i<15;$i++){       // Creation of 15 users
+        for ($i = 0; $i < 15; $i++) {       // Creation of 15 users
             $user  = new User();
             $user->setEmail($faker->email);
-            $user->setPassword($this->encoder->encodePassword($user,'password'));
+            $user->setPassword($this->encoder->encodePassword($user, 'password'));
             $user->setUsername($faker->userName);
 
-            switch ($i) 
-            {
+            switch ($i) {
                 case 0:
                     $user->setUsername('essai');
                     break;
@@ -59,18 +58,18 @@ class AppFixtures extends Fixture
 
     public function createTasks($faker, $taskNumber, $user, $manager)
     {
-        for($j=0;$j<$taskNumber;$j++)
-        {
+        for ($j = 0; $j < $taskNumber; $j++) {
             $task  = new Task();
             $task->setTitle($faker->sentence());
             $task->setContent($faker->text(250));
             $task->setCreatedAt($faker->dateTimeBetween('-2 years'));
-            if($user instanceof User)
-            {
+            if ($user instanceof User) {
                 $task->setUser($user);
             }
             $task->isDone();
-            if($j > 7){$task->toggle(1);}
+            if ($j > 7) {
+                $task->toggle(1);
+            }
 
             $manager->persist($task);
         }

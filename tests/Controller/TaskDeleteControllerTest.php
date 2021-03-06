@@ -26,7 +26,7 @@ class TaskDeleteControllerTest extends WebTestCase
         $form = $crawler->selectButton('Supprimer')->form();
         $client->submit($form);
         $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success'); 
+        $this->assertSelectorExists('.alert.alert-success');
     }
 
     public function testTaskDeleteByOwner()
@@ -38,10 +38,10 @@ class TaskDeleteControllerTest extends WebTestCase
         $form = $crawler->selectButton('Supprimer')->form();
         $client->submit($form);
         $client->followRedirect();
-        $this->assertSelectorTextContains('.alert.alert-success', "Superbe !"); 
+        $this->assertSelectorTextContains('.alert.alert-success', "Superbe !");
     }
 
-     public function testBadTokenInDeleteForm()
+    public function testBadTokenInDeleteForm()
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
@@ -51,6 +51,6 @@ class TaskDeleteControllerTest extends WebTestCase
         $form['token'] = 'John Doe';
         $client->submit($form);
         $client->followRedirect();
-        $this->assertSelectorTextContains('.alert.alert-danger', 'La tâche n\'a pas été supprimée.'); 
+        $this->assertSelectorTextContains('.alert.alert-danger', 'La tâche n\'a pas été supprimée.');
     }
 }

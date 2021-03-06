@@ -147,7 +147,7 @@ class User implements UserInterface
 
     /**
      * @see UserInterface
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function eraseCredentials()

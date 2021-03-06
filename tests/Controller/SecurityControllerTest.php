@@ -63,7 +63,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai'); 
+        $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/logout');
         $client->followRedirect();
         $this->assertSelectorExists('.btn.btn-success');

@@ -28,7 +28,7 @@ class TaskListControllerTest extends WebTestCase
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
         // With a connected user
-        $client= $this->userConnexion($client, 'user'); 
+        $client= $this->userConnexion($client, 'user');
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('.btn.btn-info', 'Créer une tâche');

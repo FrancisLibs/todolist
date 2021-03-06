@@ -11,7 +11,7 @@ class DefaultControllerTest extends WebTestCase
 {
     use ConnectUserTrait;
     
-    public function testIndex()      
+    public function testIndex()
     {
         $client = static::createClient();
         $client->request('GET', '/');

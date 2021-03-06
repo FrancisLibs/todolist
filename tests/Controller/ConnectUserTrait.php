@@ -4,7 +4,6 @@ namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 
-
 trait ConnectUserTrait
 {
     private function userConnexion($client, $username)

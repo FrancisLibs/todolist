@@ -24,14 +24,14 @@ class TaskCreateControllerTest extends WebTestCase
         // Si pas de connexion, redirection vers la page de login
         $this->assertResponseRedirects('/login', Response::HTTP_FOUND);
         $client->followRedirect();
-        $this->assertSelectorExists('label', 'Nom d\'utilisateur :' ); 
+        $this->assertSelectorExists('label', 'Nom d\'utilisateur :');
     }
 
     public function testAccessCreateTaskPage()
     {
         $client = static::createClient();
         $this->loadFixtures([AppFixtures::class]);
-        $client= $this->userConnexion($client, 'essai'); 
+        $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/tasks/create');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('button'); // Affichage du formulaire création de tâche

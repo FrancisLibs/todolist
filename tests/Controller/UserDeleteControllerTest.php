@@ -24,13 +24,13 @@ class UserDeleteControllerTest extends WebTestCase
         $client = self::createClient();
         // Without connexion
         $this->loadFixtures([AppFixtures::class]);
-        $client->request('GET', '/user/1/delete'); 
+        $client->request('GET', '/user/1/delete');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
 
         // With User connected
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/user/1/delete');
-        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED); 
+        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
 
         // With admin connected
         $client= $this->userConnexion($client, 'admin');
@@ -75,6 +75,4 @@ class UserDeleteControllerTest extends WebTestCase
         $client->followRedirect();
         $this->assertSelectorTextContains('.alert.alert-danger', 'L\'utilisateur n\'a pas été supprimé.');
     }
-
-    
 }

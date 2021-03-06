@@ -12,7 +12,7 @@ class UserTest extends KernelTestCase
     private $user;
     private $task;
 
-    Public function setUp()
+    public function setUp()
     {
         $this->user = (new User())
             ->setUsername('UtilisateurTest')
@@ -32,15 +32,14 @@ class UserTest extends KernelTestCase
         $errors = self::$container->get('validator')->validate($user);
         $messages = [];
         /** @var constraintsViolation $errors */
-        foreach ($errors as $error)
-        {
+        foreach ($errors as $error) {
             $messages[] = $error->getPropertyPath() . '=>' . $error->getMessage();
         }
         $this->assertCount($number, $errors, implode(', ', $messages));
     }
 
     public function testValidEntity()
-    { 
+    {
         $this->assertHasErrors($this->user, 0);
         $this->assertEquals("UtilisateurTest", $this->user->getUserName());
         $this->assertEquals(["ROLE_USER"], $this->user->getRoles());
@@ -56,8 +55,7 @@ class UserTest extends KernelTestCase
         $tasksCollection = $this->user->getTasks();
         $this->assertEquals(1, count($tasksCollection));
         
-        foreach($tasksCollection as $task)
-        {
+        foreach ($tasksCollection as $task) {
             $this->user->removeTask($task);
         }
         $tasksCollection = $this->user->getTasks();

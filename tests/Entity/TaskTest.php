@@ -11,7 +11,7 @@ class TaskTest extends KernelTestCase
     private $task;
     private $user;
 
-    Public function setUp()
+    public function setUp()
     {
         $this->task = (new Task())
             ->setCreatedAt(new \DateTime())
@@ -31,8 +31,7 @@ class TaskTest extends KernelTestCase
         $errors = self::$container->get('validator')->validate($task);
         $messages = [];
         /** @var constraintsViolation $errors */
-        foreach ($errors as $error)
-        {
+        foreach ($errors as $error) {
             $messages[] = $error->getPropertyPath() . '=>' . $error->getMessage();
         }
         $this->assertCount($number, $errors, implode(', ', $messages));
@@ -60,5 +59,4 @@ class TaskTest extends KernelTestCase
     {
         $this->assertHasErrors($this->task->setContent(""), 1);
     }
-
 }

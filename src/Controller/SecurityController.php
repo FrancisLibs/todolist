@@ -12,10 +12,9 @@ class SecurityController extends AbstractController
 {
     /**
      * Show the login form
-     * 
-     * @Route("/login", name="app_login")
+     *
+     * @Route("/login", name = "app_login")
      * @param           AuthenticationUtils $authenticationUtils
-     * @return          Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -23,9 +22,10 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render(
-            'security/login.html.twig', array(
-            'last_username' => $lastUsername,
-            'error'         => $error,
+            'security/login.html.twig',
+            array(
+                'last_username' => $lastUsername,
+                'error'         => $error,
             )
         );
     }

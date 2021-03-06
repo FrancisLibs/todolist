@@ -54,7 +54,7 @@ class UserCreateControllerTest extends WebTestCase
             'user[username]'    => 'TestUsername',
             'user[email]' => 'testEmail@gmail.com',
             'user[password]' => [
-                'first' => 'password', 
+                'first' => 'password',
                 'second' => 'password'
             ],
         ]);
@@ -81,7 +81,7 @@ class UserCreateControllerTest extends WebTestCase
             'user[username]'    => 'TestUsername',
             'user[email]' => 'testEmail@gmail.com',
             'user[password]' => [
-                'first' => 'password', 
+                'first' => 'password',
                 'second' => 'password'
             ],
         ]);
