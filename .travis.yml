@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - 7.4.6
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE myapp_test;'
+
+script :
+  - composer install
+  - sudo chmod 0775 bin/phpunit
+  - bin/phpunit
+  - 
