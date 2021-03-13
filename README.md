@@ -8,7 +8,6 @@ The main objective of this training is to learn the development of web applicati
 ## 1. Environnement
 
 *   WampServer 3.2.3.0
-
 *   Apache 2.4.41
 *   PHP 7.4.6
 *   MySQL 8.0.18
@@ -54,7 +53,7 @@ php bin/console doctrine:database:create
 Open a new console, and create it with 2 commands:
 
 1.  php bin/console doctrine:migrations:diff  
-1.  php bin/console doctrine:migrations:migrate
+2.  php bin/console doctrine:migrations:migrate
 
 If the first command not works, verify if the php -ver command is functional and show the version of php. If the command not work, be sure that the system variable PATH, contain the php.exe route.
 
