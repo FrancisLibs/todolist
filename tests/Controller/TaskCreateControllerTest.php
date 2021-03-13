@@ -40,7 +40,6 @@ class TaskCreateControllerTest extends WebTestCase
     public function testTaskCreate()
     {
         $client = static::createClient();
-        //$this->loadFixtures([AppFixtures::class]);
         $client= $this->userConnexion($client, 'essai');
         $client->request('GET', '/tasks/create');
         // Remplissage formulaire
