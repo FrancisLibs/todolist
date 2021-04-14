@@ -62,7 +62,7 @@ If the first command not works, verify if the php -ver command is functional and
 At the end of the procedure, use the fixtures to load fake data to the data base.
 To do that, use this command:
 
-* php bin/console doctrine:fixtures:load
+*   php bin/console doctrine:fixtures:load
 
 ## 3. Run
 
