@@ -7,7 +7,6 @@ use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,26 +52,28 @@ class TaskController extends AbstractController
                 }
             }
             return $this->render(
-                'task/list.html.twig',
-                [
+                'task/list.html.twig',[
                     'tasks' => $tasks,
-                ]
-            );
+            ]);
         }
 
-        $tasks = $taskRepository->findBy(
-            [
-            'user' => $user,
-            'isDone' => false,
-            ]
-        );
-        
-        return $this->render(
-            'task/list.html.twig',
-            [
-                'tasks' => $tasks,
-            ]
-        );
+        if ($this->isGranted('ROLE_USER')) {
+            if($done) {
+                $tasks = $taskRepository->findBy([
+                    'user' => $user,
+                    'isDone' => true,
+                ]);
+            } else {
+                $tasks = $taskRepository->findBy([
+                    'user' => $user,
+                    'isDone' => false,
+                ]);
+            }
+            return $this->render(
+                'task/list.html.twig',[
+                    'tasks' => $tasks,
+            ]);
+        }
     }
 
     /**
